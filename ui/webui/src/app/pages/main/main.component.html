@@ -33,7 +33,7 @@
         <li class="nav-item" >
             <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'SWRelease'" (click)="onClick('SWRelease')" style="font-size: 18px;">SW Release</a>
         </li>
-        <li class="nav-item" >
+        <li class="nav-item" *ngIf="role == 'advanced'">
           <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'DMS'" (click)="onClick('DMS')" style="font-size: 18px;">DMS</a>
       </li>
 
