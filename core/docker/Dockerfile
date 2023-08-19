@@ -55,10 +55,10 @@ RUN mkdir build && cd build && cmake .. && make install
 RUN ldconfig
 WORKDIR /root
 
-RUN git clone https://github.com/naushada/oysters.git
-RUN cd oysters && \
+RUN git clone https://github.com/naushada/onprem.git
+RUN cd onprem && \
     mkdir build
-WORKDIR /root/oysters/build
+WORKDIR /root/onprem/core/onprem/build
 RUN cmake .. && make
 
 #node installation
@@ -72,22 +72,7 @@ RUN apt-get -y install curl && \
     npm install -g @angular/cli && \
     npm install @clr/core @clr/icons @clr/angular @clr/ui @webcomponents/webcomponentsjs --save
 
-
-#RUN mkdir webclient && cd webclient
-
-#WORKDIR /root/webclient
-#RUN git  clone https://github.com/naushada/oysters.git
-#RUN cd oysters/ui
-#WORKDIR /root/webclient/oysters/ui/src
-
-# RUN npm install
-#RUN npm update
-
-##### Compile the Angular webgui #################
-
-# WORKDIR /root/webclient/webui
-
-WORKDIR /root/oysters/ui/Oysters
+WORKDIR /root/onprem/ui/webui
 RUN npm install
 RUN ng build --configuration production --aot --base-href /webui/
 
@@ -97,7 +82,7 @@ RUN cd /opt && \
     mkdir webgui && \
     cd webgui
 WORKDIR /opt/xAPP/webgui
-RUN cp -r /root/oysters/ui/Oysters/dist/oysters .
+RUN cp -r /root/onprem/ui/webui/dist/webui .
 
 WORKDIR /opt/xAPP
 RUN mkdir uniimage && \
@@ -105,8 +90,8 @@ RUN mkdir uniimage && \
 WORKDIR /opt/xAPP/uniimage
 
 # copy from previoud build stage
-RUN cp /root/oysters/build/uniimage .
+RUN cp /root/onprem/core/onprem/build/uniimage .
 
-ENV ARGS="--role server --server-port 58989  --protocol tcp --mongodb-uri mongodb+srv://oysters:oysters123@cluster0.acpda.mongodb.net/oysters?maxPoolSize=50"
+ENV ARGS="--role server --server-port 58989  --protocol tcp --mongodb-uri mongodb+srv://<id>:<pwd>@cluster0.acpda.mongodb.net/<database>?maxPoolSize=50"
 ENV PORT=58080
 CMD "/opt/xAPP/uniimage/uniimage" --web-port ${PORT} ${ARGS}
