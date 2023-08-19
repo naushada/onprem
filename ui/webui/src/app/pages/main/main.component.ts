@@ -13,6 +13,6 @@ export class MainComponent {
   }
 
   onClick(item:string) {
-
+    this.selectedItem = item;
   }
 }

@@ -1,0 +1,18 @@
+
+<div class="main-container">
+    <div class="content-container">
+        <clr-vertical-nav>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'CreateAccount'" (click)="onClick('CreateAccount')"><b>Create Account</b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'ListAccount'" (click)="onClick('ListAccount')"><b>List Account</b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'UpdateAccount'" (click)="onClick('UpdateAccount')"><b>Update Account</b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'DeleteAccount'" (click)="onClick('DeleteAccount')"><b>Delete Account</b></a>
+            
+        </clr-vertical-nav>
+        <div class="content-area" [ngSwitch]="selectedItem">
+            <app-create-account *ngSwitchCase="'CreateAccount'"></app-create-account>
+            <app-list-account *ngSwitchCase="'ListAccount'"></app-list-account>
+            <app-update-account *ngSwitchCase="'UpdateAccount'"></app-update-account>
+            <app-delete-account *ngSwitchCase="'DeleteAccount'"></app-delete-account>
+        </div>
+    </div>
+</div>

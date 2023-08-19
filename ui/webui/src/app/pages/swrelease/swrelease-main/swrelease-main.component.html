@@ -1,0 +1,15 @@
+<div class="main-container">
+    <div class="content-container">
+        <clr-vertical-nav>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'CreateSWRelease'" (click)="onClick('CreateSWRelease')"><b>Create SW Release</b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'ListSWRelease'" (click)="onClick('ListSWRelease')"><b>List SW Release</b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'DeleteSWRelease'" (click)="onClick('DeleteSWRelease')"><b>Delete SW Release</b></a>
+            
+        </clr-vertical-nav>
+        <div class="content-area" [ngSwitch]="selectedItem">
+            <app-create-swrelease *ngSwitchCase="'CreateSWRelease'"></app-create-swrelease>
+            <app-list-swrelease *ngSwitchCase="'ListSWRelease'"></app-list-swrelease>
+            <app-delete-swrelease *ngSwitchCase="'DeleteSWRelease'"></app-delete-swrelease>
+        </div>
+    </div>
+</div>

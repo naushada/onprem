@@ -12,6 +12,15 @@ import { ClarityModule } from '@clr/angular';
 import { CdsIconModule, CdsModule } from '@cds/angular';
 import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon, newIcon } from '@cds/core/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DmsMainComponent } from './pages/dms/dms-main/dms-main.component';
+import { CreateAccountComponent } from './pages/dms/create-account/create-account.component';
+import { ListAccountComponent } from './pages/dms/list-account/list-account.component';
+import { UpdateAccountComponent } from './pages/dms/update-account/update-account.component';
+import { DeleteAccountComponent } from './pages/dms/delete-account/delete-account.component';
+import { SwreleaseMainComponent } from './pages/swrelease/swrelease-main/swrelease-main.component';
+import { CreateSwreleaseComponent } from './pages/swrelease/create-swrelease/create-swrelease.component';
+import { ListSwreleaseComponent } from './pages/swrelease/list-swrelease/list-swrelease.component';
+import { DeleteSwreleaseComponent } from './pages/swrelease/delete-swrelease/delete-swrelease.component';
 ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, newIcon);
 
 
@@ -21,7 +30,16 @@ ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, 
     MainComponent,
     LoginComponent,
     SystemComponent,
-    ConfigComponent
+    ConfigComponent,
+    DmsMainComponent,
+    CreateAccountComponent,
+    ListAccountComponent,
+    UpdateAccountComponent,
+    DeleteAccountComponent,
+    SwreleaseMainComponent,
+    CreateSwreleaseComponent,
+    ListSwreleaseComponent,
+    DeleteSwreleaseComponent
   ],
   imports: [
     BrowserModule,

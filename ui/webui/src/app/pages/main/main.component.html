@@ -22,7 +22,7 @@
     <nav class="subnav" [clr-nav-level]="1" >
       <ul class="nav" style="margin-left: 20%; cursor: pointer;">
         <li class="nav-item" >
-          <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'System'" (click)="onClick('RegisterDevice')" style="font-size: 18px;">Register Device(s)</a>
+          <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'RegisterDevice'" (click)="onClick('RegisterDevice')" style="font-size: 18px;">Register Device(s)</a>
         </li>
         <li class="nav-item" >
           <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'System'" (click)="onClick('System')" style="font-size: 18px;">System</a>
@@ -31,17 +31,17 @@
           <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'Config'" (click)="onClick('Config')" style="font-size: 18px;">Config (Template)</a>
         </li>
         <li class="nav-item" >
-            <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'Release'" (click)="onClick('Release')" style="font-size: 18px;">SW Release</a>
+            <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'SWRelease'" (click)="onClick('SWRelease')" style="font-size: 18px;">SW Release</a>
         </li>
         <li class="nav-item" >
-          <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'Release'" (click)="onClick('DMS')" style="font-size: 18px;">DMS</a>
+          <a class="nav-link" clrVerticalNavLink [class.active] = "selectedItem == 'DMS'" (click)="onClick('DMS')" style="font-size: 18px;">DMS</a>
       </li>
 
       </ul>
     </nav>
     <div [ngSwitch]="selectedItem">
-      
-      
+      <app-dms-main *ngSwitchCase="'DMS'"></app-dms-main>
+      <app-swrelease-main *ngSwitchCase="'SWRelease'"></app-swrelease-main>
     </div>
   </clr-main-container>
   

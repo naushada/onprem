@@ -29,6 +29,8 @@ export class LoginComponent {
 
   onLogin() {
 
+    this.rt.navigateByUrl('/main');
+
     if(!this.username.length || !this.password.length) {
       alert("User ID or Password Can't be Empty");
     }
