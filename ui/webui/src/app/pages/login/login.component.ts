@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpService } from 'src/common/http.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
 
   loginForm: FormGroup
-  constructor(private fb: FormBuilder, private rt:Router) {
+  constructor(private fb: FormBuilder, private rt:Router, private http: HttpService) {
     this.loginForm = this.fb.group({
       username: '',
       password: ''
@@ -27,16 +28,14 @@ export class LoginComponent {
 
   onLogin() {
 
-    this.rt.navigateByUrl('/main');
-
     if(!this.username.length || !this.password.length) {
       alert("User ID or Password Can't be Empty");
     }
-    /*
-    this.http.getlogininfo(this.username, this.password).subscribe((accountinfo:IAccountInfo) => {
+    
+    this.http.getlogininfo(this.username, this.password).subscribe((accountinfo:string) => {
       let id:string = "user.login";
       let document: string = JSON.stringify(accountinfo);
-      this.event.publish({id, document});
+      //this.event.publish({id, document});
       this.rt.navigateByUrl('/main');
     },
     (error) => {
@@ -45,6 +44,6 @@ export class LoginComponent {
     () => {
 
     });
-    */
+    
   }
 }
