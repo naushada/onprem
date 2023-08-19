@@ -1,1 +1,17 @@
-<p>delete-account works!</p>
+<form clrForm clrLayout="vertical" [formGroup]="deleteaccountForm" (ngSubmit)="onSubmit()">
+    <div class="clr-container">
+        <!-- First ROW -->
+        <div class="clr-row">
+            <!--element 1-->
+            <div class="clr-col clr-col-lg" >
+                <clr-input-container>
+                    <label for="userid">User ID</label>
+                    <input clrInput name="userid" formControlName="userid" >
+                </clr-input-container>
+            </div>
+        </div>
+        </div>
+    <div>
+        <cds-button class="btn btn-primary">Delete Account</cds-button>
+    </div>
+</form>

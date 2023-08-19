@@ -66,7 +66,7 @@ export class HttpService {
     "response": JSON Document    ----> Optional
   } 
    */
-  createlogininfo(input:string): Observable<string> {
+  createaccount(input:string): Observable<string> {
     let uri: string = "";
     if(this.apiURL.length > 0) {
       uri = this.apiURL + "/api/v1/dms/account";
