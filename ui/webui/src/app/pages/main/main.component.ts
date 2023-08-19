@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class MainComponent {
 
+  selectedItem:string = "Config";
+  constructor() {
+
+  }
+
+  onClick(item:string) {
+
+  }
 }
