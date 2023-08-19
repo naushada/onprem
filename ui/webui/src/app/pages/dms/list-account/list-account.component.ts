@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class ListAccountComponent {
 
+  selected:any;
+  constructor() {
+
+  }
 }

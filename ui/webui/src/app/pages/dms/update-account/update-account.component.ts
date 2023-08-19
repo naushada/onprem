@@ -8,7 +8,6 @@ import { HttpService } from 'src/common/http.service';
   styleUrls: ['./update-account.component.scss']
 })
 export class UpdateAccountComponent {
-
   
   updateaccountForm:FormGroup;
   selectedRole: string = "advanced";
