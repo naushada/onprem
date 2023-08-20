@@ -471,7 +471,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                             }
 
                             if(!payload_len || payload_len < 0) {
-                                std::cout << "line: " << __LINE__ << " closing the client connection for serviceType: " << serviceType << " len: " << len << std::endl;
+                                std::cout << "line: " << __LINE__ << " closing the client connection for serviceType: " << serviceType << " len: " << len << std::endl;                                
                                 DeRegisterFromEPoll(Fd);
                                 DeleteService(serviceType, Fd);
                                 break;
@@ -588,6 +588,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                         bool is_conn_closed = false;
                         std::string status;
                         do {
+
                             auto ret = svc->tls().peek(out);
                             if(ret > 0) {
 
@@ -613,8 +614,8 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                         do {
                             if(is_conn_closed) {
                                 //Peer is closed now 
-                                DeleteService(serviceType);
                                 DeRegisterFromEPoll(Fd);
+                                DeleteService(serviceType);
                                 break;
                             }
 
@@ -976,9 +977,9 @@ std::string noor::RestClient::registerDatapoints(const std::vector<std::string>&
         jarray.push_back(ent);
     }
     auto body = jarray.dump();
-    json jobj = json::object();
-    jobj["last"] = jarray;
-    body = jobj.dump();
+    json Value = json::object();
+    Value["last"] = jarray;
+    body = Value.dump();
 
     //clear the previous contents now.
     ss.str("");
@@ -1036,31 +1037,133 @@ std::string noor::RestClient::processResponse(const std::string& http_header, co
             promise().set_value();
             return(std::string());
         }
-        return(authorizeToken(http_body, "test"));
+        //return(authorizeToken(http_body, "test"));
+        return(registerDatapoints({{"device"}}));
 
     } else if(!uri().compare(0, 26, "/api/v1/auth/authorization")) {
         std::cout << "line: " << __LINE__ << " http_body: " << http_body << std::endl;
         json json_object = json::parse(http_body);
-        
-        
         //device name is unknown
         return(registerDatapoints({{"device"}}));
-
 
     } else if(!uri().compare(0, 19, "/api/v1/register/db")) {
         std::unordered_map<std::string, std::string> cache;
         
         if(http_body.length()) {
             //Parse the json response
-            json jobj = json::parse(http_body);
+            json Value = json::parse(http_body);
 
-            json ind = json::object();
-            for(const auto& ent: cache) {
-                ind[ent.first] = ent.second;
+            if(!deviceName().length() && Value["data"]["device.product"] != nullptr) {
+                deviceName(Value["data"]["device.product"].get<std::string>());
+                if(!deviceName().compare(0, 4, "RX55")) {
+                    return(registerDatapoints({
+                            {"device"},
+                            {"system.os"},
+                            //Wan IP Address
+                            {"net.interface.common[].ipv4.address"},
+                            {"net.interface.cellular[c1]"},
+                            //WiFi Mode
+                            {"net.interface.wifi[w1].radio.mode"},
+                            {"net.interface.wifi[w2].radio.mode"},
+                            {"system.bootcheck.signature"}
+                            }));
+                }
+                return(registerDatapoints({
+                        {"device"},
+                        {"system.os"},
+                        //Wan IP Address
+                        {"net.interface.common[].ipv4.address"},
+                        {"net.interface.cellular[]"},
+                        //WiFi Mode
+                        {"net.interface.wifi[w1].radio.mode"},
+                        {"net.interface.wifi[w2].radio.mode"},
+                        {"net.interface.wifi[w3].radio.mode"},
+                        {"system.bootcheck.signature"}}));
             }
-            std::cout << "line: " << __LINE__ << " value: " << ind.dump() << std::endl;
 
-            result.assign(ind.dump());
+            //We have received the Device Information Process it.
+            auto ValueResponse = json::object();
+
+            ValueResponse["model"] = Value["data"]["device.product"].get<std::string>();
+            ValueResponse["serialnumber"] = Value["data"]["device.provisioning.serial"].get<std::string>();
+            ValueResponse["osversion"] = Value["data"]["system.os.version"].get<std::string>();
+            ValueResponse["osbuildnumber"] = Value["data"]["system.os.buildnumber"].get<std::string>();
+            ValueResponse["firmwarename"] = Value["data"]["system.os.name"].get<std::string>();
+            ValueResponse["status"] = "";
+            ValueResponse["lastcommunicatioondate"] = "";
+
+            auto ValueResponseArr = json::array();
+            auto ValueResponseCellular = json::object();
+
+            if(!deviceName().compare(0, 4, "RX55")) {
+
+                ValueResponseCellular["carrier"] = Value["data"]["net.interface.cellular[c1].operator"].get<std::string>();
+                ValueResponseCellular["technology"] = Value["data"]["net.interface.cellular[c1].technology.current"].get<std::string>();
+                ValueResponseCellular["apn"] = Value["data"]["net.interface.cellular[c1].apninuse"].get<std::string>();
+                ValueResponseCellular["signalstrength"] = std::to_string(Value["data"]["net.interface.cellular[c1].rssi"].get<std::int32_t>());
+                ValueResponseCellular["ipaddress"] = Value["data"]["net.interface.common[c1].ipv4.address"].get<std::string>();
+                ValueResponseCellular["imei"] = Value["data"]["net.interface.cellular[c1].imei"].get<std::string>();
+
+                ValueResponseArr.push_back(ValueResponseCellular);
+
+            } else if(!deviceName().compare(0, 4, "XR80")) {
+
+                if(Value["data"]["net.interface.cellular[c2].service"] != nullptr && 
+                  !(Value["data"]["net.interface.cellular[c2].service"].get<std::string>()).compare(0, 9, "Available")) {
+
+                    ValueResponseCellular["carrier"] = Value["data"]["net.interface.cellular[c2].operator"].get<std::string>();
+                    ValueResponseCellular["technology"] = Value["data"]["net.interface.cellular[c2].technology.current"].get<std::string>();
+                    ValueResponseCellular["apn"] = Value["data"]["net.interface.cellular[c2].apninuse"].get<std::string>();
+                    ValueResponseCellular["signalstrength"] = std::to_string(Value["data"]["net.interface.cellular[c2].rssi"].get<std::int32_t>());
+                    ValueResponseCellular["ipaddress"] = Value["data"]["net.interface.common[c2].ipv4.address"].get<std::string>();
+                    ValueResponseCellular["imei"] = Value["data"]["net.interface.cellular[c2].imei"].get<std::string>();
+                    ValueResponseArr.push_back(ValueResponseCellular);
+                }
+
+                if(Value["data"]["net.interface.cellular[c3].service"] != nullptr && 
+                  !(Value["data"]["net.interface.cellular[c3].service"].get<std::string>()).compare(0, 9, "Available")) {
+
+                    ValueResponseCellular["carrier"] = Value["data"]["net.interface.cellular[c3].operator"].get<std::string>();
+                    ValueResponseCellular["technology"] = Value["data"]["net.interface.cellular[c3].technology.current"].get<std::string>();
+                    ValueResponseCellular["apn"] = Value["data"]["net.interface.cellular[c3].apninuse"].get<std::string>();
+                    ValueResponseCellular["signalstrength"] = std::to_string(Value["data"]["net.interface.cellular[c3].rssi"].get<std::int32_t>());
+                    ValueResponseCellular["ipaddress"] = Value["data"]["net.interface.common[c3].ipv4.address"].get<std::string>();
+                    ValueResponseCellular["imei"] = Value["data"]["net.interface.cellular[c3].imei"].get<std::string>();
+                    ValueResponseArr.push_back(ValueResponseCellular);
+                }
+
+            } else if(!deviceName().compare(0, 4, "XR90")) {
+
+                if(Value["data"]["net.interface.cellular[c4].service"] != nullptr && 
+                  !(Value["data"]["net.interface.cellular[c4].service"].get<std::string>()).compare(0, 9, "Available")) {
+
+                    ValueResponseCellular["carrier"] = Value["data"]["net.interface.cellular[c4].operator"].get<std::string>();
+                    ValueResponseCellular["technology"] = Value["data"]["net.interface.cellular[c4].technology.current"].get<std::string>();
+                    ValueResponseCellular["apn"] = Value["data"]["net.interface.cellular[c4].apninuse"].get<std::string>();
+                    ValueResponseCellular["signalstrength"] = std::to_string(Value["data"]["net.interface.cellular[c4].rssi"].get<std::int32_t>());
+                    ValueResponseCellular["ipaddress"] = Value["data"]["net.interface.common[c4].ipv4.address"].get<std::string>();
+                    ValueResponseCellular["imei"] = Value["data"]["net.interface.cellular[c4].imei"].get<std::string>();
+                    ValueResponseArr.push_back(ValueResponseCellular);
+                }
+
+                if(Value["data"]["net.interface.cellular[c5].service"] != nullptr && 
+                  !(Value["data"]["net.interface.cellular[c5].service"].get<std::string>()).compare(0, 9, "Available")) {
+
+                    ValueResponseCellular["carrier"] = Value["data"]["net.interface.cellular[c5].operator"].get<std::string>();
+                    ValueResponseCellular["technology"] = Value["data"]["net.interface.cellular[c5].technology.current"].get<std::string>();
+                    ValueResponseCellular["apn"] = Value["data"]["net.interface.cellular[c5].apninuse"].get<std::string>();
+                    ValueResponseCellular["signalstrength"] = std::to_string(Value["data"]["net.interface.cellular[c5].rssi"].get<std::int32_t>());
+                    ValueResponseCellular["ipaddress"] = Value["data"]["net.interface.common[c5].ipv4.address"].get<std::string>();
+                    ValueResponseCellular["imei"] = Value["data"]["net.interface.cellular[c5].imei"].get<std::string>();
+                    ValueResponseArr.push_back(ValueResponseCellular);
+                }
+
+            } else {
+
+            }
+            ValueResponse["cellular"] = ValueResponseArr;
+            std::cout << "line: " << __LINE__ << " value: " << ValueResponse.dump() << std::endl;
+            result.assign(ValueResponse.dump());
         }
     } else if(!uri().compare(0, 14, "/api/v1/events")) {
         

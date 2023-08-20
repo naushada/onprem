@@ -467,6 +467,8 @@ class noor::RestClient {
         void pending_request(bool status) { m_pending_request = status;}
         auto& promise() {return m_promise;}
         void promise(const auto& pr) {m_promise = pr;}
+        void deviceName(std::string  name) { m_deviceName.assign(name);}
+        std::string deviceName() const { return(m_deviceName);}
 
     private:
         std::string m_cookies;
