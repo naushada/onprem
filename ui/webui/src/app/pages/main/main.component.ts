@@ -10,13 +10,15 @@ import { EventService } from 'src/common/event.service';
 export class MainComponent {
 
   selectedItem:string = "Config";
-  role:string = "advanced";
+  role:string = "basic";
   constructor(private event: EventService) {
     event.subscribe("user.login", (id:String, document:string) => {
       if(id == "user.login") {
-        let response = JSON.parse(JSON.stringify(document));
+        let response = JSON.parse(document);
+        //console.log(response);
+        //console.log(response["response.role"]);
         if(response["status"] == "success") {
-          this.role = response["role"];
+          this.role = JSON.parse(response["response"])["role"];
         } else {
           this.role = "basic";
         }

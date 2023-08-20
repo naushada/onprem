@@ -1898,7 +1898,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 
 std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
 
-    if(!http.uri().compare(0, 15, "/api/v1/dms/account")) {
+    if(!http.uri().compare(0, 19, "/api/v1/dms/account")) {
         auto body = json::parse(http.body());
         auto collectionname = "account";
         std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
@@ -1908,7 +1908,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto Value = json::object();
         Value["status"] = "success";
         Value["details"] = "";
-        Value["response"] = "";
+        Value["response"] = response;
 
         if(!response.length()) {
             Value["status"] = "failure";
