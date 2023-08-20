@@ -11,6 +11,7 @@ import { HttpService } from 'src/common/http.service';
 })
 export class LoginComponent {
 
+  openpasswordreset:boolean = false;
   loginForm: FormGroup
   constructor(private fb: FormBuilder, private rt:Router, private http: HttpService, private event: EventService) {
     this.loginForm = this.fb.group({
@@ -48,5 +49,12 @@ export class LoginComponent {
 
     });
     
+  }
+
+  onPasswordReset() {
+    this.openpasswordreset = true;
+    let id: string = "password.reset";
+    let document: string = "{\"state\": " + "true}";
+    this.event.publish({id, document});
   }
 }

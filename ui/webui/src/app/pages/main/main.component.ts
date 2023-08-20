@@ -10,7 +10,7 @@ import { EventService } from 'src/common/event.service';
 export class MainComponent {
 
   selectedItem:string = "Config";
-  role:string = "basic";
+  role:string = "advanced";
   constructor(private event: EventService) {
     event.subscribe("user.login", (id:String, document:string) => {
       if(id == "user.login") {
