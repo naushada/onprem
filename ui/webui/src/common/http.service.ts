@@ -179,9 +179,9 @@ export class HttpService {
       param = `serialnumber=${serialnumber}`;
     }
 
-    let uri: string = "/api/v1/device/details";
+    let uri: string = "/api/v1/dms/device";
     if(this.apiURL.length > 0) {
-      uri = this.apiURL + "/api/v1/device/details";
+      uri = this.apiURL + "/api/v1/dms/device";
     }
 
     const options = {params: new HttpParams({fromString: param})};

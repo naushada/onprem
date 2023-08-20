@@ -30,7 +30,8 @@ export class CreateAccountComponent {
 
   onSubmit() {
     let request = {...this.createaccountForm.value};
-
+    //alert("The request: " + request);
+    //console.log(request);
     this.http.createaccount(JSON.stringify(request)).subscribe((response: string) => {
       alert("Account Created Successfully");
       this.createaccountForm.reset('');

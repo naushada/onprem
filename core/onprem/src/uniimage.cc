@@ -507,44 +507,18 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 break;
                             }
 
-                            //for Geolocation.
                             Http http(request);
-                            if(!http.uri().compare(0, 19, "/api/v1/geolocation")) {
-                                CreateServiceAndRegisterToEPoll(noor::ServiceType::Tls_Tcp_Geolocation_Service_Sync, "api.ipstack.com", 80);
-                                auto svc = GetService(noor::ServiceType::Tls_Tcp_Geolocation_Service_Sync);
-                                if(svc == nullptr) {
-                                    //build an error response
+                            if(!http.uri().compare(0, 11, "/api/v1/dms")) {
+                                //Handle locally.
+                                auto rsp = svc->process_web_request(request, GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst());
+                                if(rsp.length()) {
+                                    auto ret = svc->tcp_tx(Fd, rsp);
                                     break;
                                 }
-                                auto response = svc->get_geolocation(http.value("X-Forwarded-For"), get_config()["geolocation-access-token"]);
-                                //std::cout << __TIMESTAMP__ << " line: " << __LINE__ << " response: " << response << std::endl;
-                                {
-                                    Http http(response);
-                                    if(response.length() && !http.status_code().compare(0, 3, "200")) {
-                                        //200 OK success Response
-                                        json jobj = json::parse(http.body());
-                                        if(jobj["status"] == nullptr) {
-                                            std::cout << __TIMESTAMP__ << " line: " << __LINE__ << " latitude: " << jobj["latitude"] << " longitude: " 
-                                                      <<jobj["longitude"] << std::endl;
-                                            auto content = svc->buildHttpResponseOK(http, http.body(), "application/json");
-                                            svc->tcp_tx(Fd, content);
-                                            DeRegisterFromEPoll(svc->handle());
-                                            DeleteService(noor::ServiceType::Tls_Tcp_Geolocation_Service_Sync, svc->handle());
-                                            break;
-                                        }
-                                    }
-                                    svc->tcp_tx(Fd, response);
-                                }
-                                DeRegisterFromEPoll(svc->handle());
-                                DeleteService(noor::ServiceType::Tls_Tcp_Geolocation_Service_Sync, svc->handle());
-                                break;
+                            } else if(!http.uri().compare(0, 14, "/api/v1/device")) {
+                                //Pass to device.
                             }
-
-                            auto rsp = svc->process_web_request(request, GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst());
-                            if(rsp.length()) {
-                                auto ret = svc->tcp_tx(Fd, rsp);
-                                break;
-                            }
+                            
                         }while(0);
                     }
                     break;
@@ -1640,92 +1614,81 @@ std::string noor::Service::handleOptionsMethod(Http& http) {
 std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 
     std::stringstream ss("");
-    if(!http.uri().compare(0, 15, "/api/v1/account")) {
+    if(!http.uri().compare(0, 19, "/api/v1/dms/account")) {
         auto projection = json::object();
         projection["_id"] = false;
         auto collectionname = "account";
         auto filter = json::object();
         //QS value
         std::string querydocument = "";
-        auto grade = http.value("grade");
-        auto section = http.value("section");
-
-        if(grade.length() > 0 && section.length() > 0) {
-            
-
-            if(!grade.compare(0, 3, "all") && !section.compare(0,3, "all")) {
-                //Get All Account Documents fron Account Collection
-            } else {
-                if(grade.compare(0, 3, "all")) {
-                    //grade is not all
-                    filter["personalinfo.grade"] = grade;
-                }
-                if(section.compare(0, 3, "all")) {
-                    //section is not all
-                    filter["personalinfo.section"] = section;
-                }
-            }
-            auto response = dbinst.get_documentsEx(collectionname, filter.dump(), projection.dump());
-            return(buildHttpResponseOK(http, response, "application/json"));
-        }
-
         auto userid = http.value("userid");
         auto password = http.value("password");
 
-        if(userid.length() && password.length()) {
+        if(userid.length() > 0 && password.length() > 0) {
             filter["logininfo.userid"] = userid;
             filter["logininfo.password"] = password;
             auto response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
-            return(buildHttpResponseOK(http, response, "application/json"));
+
+            auto Value = json::object();
+            Value["status"] = "success";
+            Value["details"] = "";
+            Value["response"] = response;
+
+            return(buildHttpResponseOK(http, Value.dump(), "application/json"));
         }
 
-    } else if(!http.uri().compare(0, 17, "/api/v1/grievance")) {
+        userid = http.value("userid");
+        std::string response("");
+
+        if(userid.length()) {
+
+            if(!userid.compare(0, 3, "all")) {
+                response = dbinst.get_documentsEx(collectionname, filter.dump(), projection.dump());
+            } else {
+                filter["userid"] = userid;
+                response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
+            }
+
+            auto Value = json::object();
+            Value["status"] = "success";
+            Value["details"] = "";
+            Value["response"] = response;
+
+            return(buildHttpResponseOK(http, Value.dump(), "application/json"));  
+        }
+
+    } else if(!http.uri().compare(0, 17, "/api/v1/dms/device")) {
         //Retrieve the Grievance Tickets 
         auto projection = json::object();
         projection["_id"] = false;
-        auto collectionname = "grievance";
+        auto collectionname = "device";
         auto filter = json::object();
-        //QS value
-        std::string querydocument = "";
-        auto userid = http.value("userid");
+        
+        auto serialnumber = http.value("serialnumber");
         std::string response = "";
-        if(userid.length() > 0) {
-            if(!userid.compare(0, 3, "all")) {
+
+        if(serialnumber.length() > 0) {
+            if(!serialnumber.compare(0, 3, "all")) {
                 //Get All Account Documents fron grievance Collection
-                response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
+                response = dbinst.get_documentsEx(collectionname, filter.dump(), projection.dump());
                 //std::cout << "line: " << __LINE__ << " response: "  << response << std::endl;
             } else {
-                filter["tickets.userid"] = userid;
+                filter["serialnumber"] = serialnumber;
                 response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
                 //std::cout << "line: " << __LINE__ << " response: "  << response << std::endl;
             }
-            return(buildHttpResponseOK(http, response, "application/json"));
+
+            auto Value = json::object();
+            Value["status"] = "success";
+            Value["details"] = "";
+            Value["response"] = response;
+
+            return(buildHttpResponseOK(http, Value.dump(), "application/json"));
         }
 
-        auto ticketid = http.value("ticketid");
-        if(ticketid.length()) {
-            auto qs = json::array();
-            //qs[0] = std::stoi(ticketid);
-            //auto qsobj = json::object();
-            //qsobj["$in"] = qs;
-            filter["tickets.ticketid"] = std::stoi(ticketid);
-            //filter["tickets.ticketid"] = qsobj;
-            std::cout << "line: " << __LINE__ << " filter: " << filter.dump() << std::endl;
-            //projection["tickets.ticketid"] = 1;
-            response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
-            std::cout << "line: " << __LINE__ << " response: " << response << std::endl; 
-            return(buildHttpResponseOK(http, response, "application/json"));
-        }
-
-    } else if(!http.uri().compare(0, 11, "/api/v1/pta")) {
-        auto projection = json::object();
-        projection["_id"] = false;
-        auto collectionname = "pta";
-        auto filter = json::object();
-        auto response = dbinst.get_documentsEx(collectionname, filter.dump(), projection.dump());
-        //std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
-        return(buildHttpResponseOK(http, response, "application/json"));
-    } else if(!http.uri().compare(0, 14, "/api/v1/report")) {
+    } else if(!http.uri().compare(0, 11, "/api/v1/dms/swrelease")) {
+        
+    } else if(!http.uri().compare(0, 14, "/api/v1/dms/template")) {
 
     } else if((!http.uri().compare(0, 7, "/webui/"))) {
         /* build the file name now */
@@ -1736,7 +1699,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
         if(found != std::string::npos) {
           ext = http.uri().substr((found + 1), (http.uri().length() - found));
           fileName = http.uri().substr(6, (http.uri().length() - 6));
-          std::string newFile = "../webgui/oysters/" + fileName;
+          std::string newFile = "../webgui/webui/" + fileName;
           /* Open the index.html file and send it to web browser. */
           std::ifstream ifs(newFile.c_str());
           std::stringstream ss("");
@@ -1753,7 +1716,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
           }
         } else {
             std::cout <<"line: " << __LINE__ << " processing index.html file " << std::endl;
-            std::string newFile = "../webgui/oysters/index.html";
+            std::string newFile = "../webgui/webui/index.html";
             /* Open the index.html file and send it to web browser. */
             std::ifstream ifs(newFile.c_str(), std::ios::binary);
             std::stringstream ss("");
@@ -1770,7 +1733,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
         }
     } else if(!http.uri().compare(0, 1, "/")) {
         std::cout <<"line: " << __LINE__ << " processing index.html file " << std::endl;
-        std::string newFile = "../webgui/oysters/index.html";
+        std::string newFile = "../webgui/webui/index.html";
         /* Open the index.html file and send it to web browser. */
         std::ifstream ifs(newFile.c_str(), std::ios::binary);
         std::stringstream ss("");
@@ -1791,116 +1754,66 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 }
 
 std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
-    std::stringstream ss("");
 
-    
-    if(!http.uri().compare(0, 15, "/api/v1/account")) {
+    if(!http.uri().compare(0, 15, "/api/v1/dms/account")) {
         auto body = json::parse(http.body());
+        auto collectionname = "account";
         std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
         //Create a new document in account collection.
-        auto response = dbinst.create_documentEx("account", http.body());
+        auto response = dbinst.create_documentEx(collectionname, http.body());
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
-        auto jobj = json::object();
-        jobj["result"] = "success";
-        jobj["reason"] = "";
-        jobj["statuscode"] = 200;
-        jobj["ts"] = "";
-        jobj["ip"] = http.value("X-Forwarded-For");
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+        Value["response"] = "";
 
         if(!response.length()) {
-            jobj["result"] = "failure";
-            jobj["statuscode"] = 500;
+            Value["status"] = "failure";
+            Value["details"] = response;
         }
 
-        return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
-    } else if(!http.uri().compare(0, 17, "/api/v1/grievance")) {
+    } else if(!http.uri().compare(0, 20, "/api/v1/dms/register")) {
         //CCreate the Grievance 
         auto body = json::parse(http.body());
         auto projection = json::object();
 
         projection["_id"] = false;
         //Retrieve the current value of grievanceid
-        projection["grievanceid"] = true;
+        projection["serialnumber"] = true;
 
-        auto collectionname = "grievance";
+        auto collectionname = "register";
         auto filter = json::object();
         //QS value
         auto querydocument = json::object();
         auto response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
-        std::uint32_t id = 0;
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+
         if(!response.length()) {
-            //No Grievance found.
-            id = 1;
             response = dbinst.create_documentEx(collectionname, http.body());
+            Value["response"] = "{\"oid\": " +  response + "}";
         } else  {
-            //Got the grievvanceid iincreament it and create new grievance
-            auto data = json::parse(response);
-            id = data["grievanceid"];
-            id++;
-            std::stringstream document;
-            document << "{\"$inc\": {\"grievanceid\": " << 1 << "}}";
-            response = dbinst.update_collection(collectionname, filter.dump(), document.str());
-            document.str("");
-            body["tickets"][0]["ticketid"] = id;
-            document << "{\"$push\": {\"tickets\": "  << body["tickets"][0] << "}}";
-            response = dbinst.update_collection(collectionname, filter.dump(), document.str());
+            Value["response"] = "{\"serialnumber\": " +  response + "}";
         }
 
-        auto jobj = json::object();
-        jobj["result"] = "success";
-        jobj["reason"] = "";
-        jobj["statuscode"] = 200;
-        jobj["ts"] = "";
-        jobj["ip"] = http.value("X-Forwarded-For");
-        jobj["payload"] = std::to_string(id);
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
-        if(!response.length()) {
-            jobj["result"] = "failure";
-            jobj["statuscode"] = 500;
-        }
-
-        return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
-
-    } else if(!http.uri().compare(0, 11, "/api/v1/pta")) {
-        //Create PTA Account 
+    } else if(!http.uri().compare(0, 21, "/api/v1/dms/swrelease")) {
+        
         auto body = json::parse(http.body());
         auto projection = json::object();
         projection["_id"] = false;
-        auto collectionname = "pta";
+        auto collectionname = "swrelease";
         auto filter = json::object();
         //QS value
         auto querydocument = json::object();
+        
+    } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
 
-        filter["academicyear"] = body["academicyear"];
-        auto response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
-
-        if(!response.length()) {
-            response = dbinst.create_documentEx(collectionname, http.body());
-        } else {
-            //update the document.
-            std::stringstream document;
-            document << "{\"$push\": {\"ptas\": "  << body["ptas"][0] << "}}";
-            response = dbinst.update_collection(collectionname, filter.dump(), document.str());
-        }
-
-        std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
-        auto jobj = json::object();
-        jobj["result"] = "success";
-        jobj["reason"] = "";
-        jobj["statuscode"] = 200;
-        jobj["ts"] = "";
-        jobj["ip"] = http.value("X-Forwarded-For");
-
-        if(!response.length()) {
-            jobj["result"] = "failure";
-            jobj["statuscode"] = 500;
-        }
-
-        return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
-
-    } else if(!http.uri().compare(0, 14, "/api/v1/report")) {
     } else {
 
     }
