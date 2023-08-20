@@ -56,7 +56,7 @@ RUN ldconfig
 WORKDIR /root
 
 RUN git clone https://github.com/naushada/onprem.git
-RUN cd onprem && \
+RUN cd onprem/core/onprem && \
     mkdir build
 WORKDIR /root/onprem/core/onprem/build
 RUN cmake .. && make
