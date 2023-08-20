@@ -434,7 +434,8 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 DeleteService(serviceType, Fd);
                                 break;
                             }
-                            json jobj = json::parse(request);
+                            json Value = json::parse(request);
+                            //Store into DB , the device information.
 
                         }while(0);
                     }
@@ -671,7 +672,15 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
 
                                     auto channel = svc->handle();
                                     if(channel > 0 && noor::client_connection::Connected == svc->connected_client(channel)) {
-                                        auto len = svc->tcp_tx(channel, result);
+                                        //Add HTTP Header to it.
+                                        std::stringstream ss;
+                                        ss << "POST /api/v1/dms/device/register HTTP/1.1\r\n"
+                                           << "Connection: keep-aalive\r\n"
+                                           << "Content-Length: " << result.length() << "\r\n"
+                                           << "\r\n"
+                                           << result;
+
+                                        auto len = svc->tcp_tx(channel, ss.str());
                                         if(len > 0) {
                                             std::cout << "line: " << __LINE__ << " sent to TCP Server len: " << len << " for serviceType: " << noor::ServiceType::Tcp_Client_Service_Async << " result: " << result << std::endl; 
                                         }
