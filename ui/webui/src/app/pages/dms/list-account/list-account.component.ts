@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpService } from 'src/common/http.service';
 
 @Component({
   selector: 'app-list-account',
@@ -8,7 +9,20 @@ import { Component } from '@angular/core';
 export class ListAccountComponent {
 
   selected:any;
-  constructor() {
+  accounts: any[] = [];
+  constructor(private http: HttpService) {
+    http.getaccounts("all").subscribe((response: string) => {
+      this.accounts.length = 0;
+      let result = JSON.parse(JSON.stringify(response));
+      if(result["status"] == "success") {
+        let payload = JSON.parse(result["response"]);
+        this.accounts = payload;
+      }
+      
+    },
+    (error) => {},
+    () => {
 
+    });
   }
 }

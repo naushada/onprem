@@ -76,6 +76,30 @@ export class HttpService {
   /**
   Request:
    {
+   }
+   Response:
+   {
+    "status": "success/failure", ----> Mandatory
+    "details": "failure reason", ----> Conditional
+    "response": Array of JSON Document    ----> Optional
+  } 
+   */
+  getaccounts(userid: string): Observable<string> {
+    let param = "";
+    param = `userid=${userid}`;
+
+    let uri: string = "/api/v1/dms/account";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/account";
+    }
+
+    const options = {params: new HttpParams({fromString: param})};
+    return this.http.get<string>(uri, options);
+  }
+
+  /**
+  Request:
+   {
       "serialnumber": "",
       "productcode": "",
       "producttype": ""
