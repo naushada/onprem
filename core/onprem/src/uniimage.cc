@@ -443,7 +443,19 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 auto serialnumber = Value["serialnumber"].get<std::string>();
                                 Value["status"]  = "online";
                                  time_t now = time(0);
-                                Value["lastcommunicationndate"] = ctime((&now));
+                                Value["lastcommunicationdate"] = ctime((&now));
+                                auto &dbinst = GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst();
+                                auto collection = "device";
+                                auto filter = json::object();
+                                filter["serialnumber"] = serialnumber;
+                                auto projection = json::object();
+                                projection["_id"] = false;
+                                auto response = dbinst.get_documentEx(collection, filter.dump(), projection.dump());
+                                if(!response.length()) {
+                                    dbinst.create_documentEx(collection, Value.dump());
+                                } else {
+                                    dbinst.update_collectionEx(collection,filter.dump(), Value.dump());
+                                }
 
                             } else {
                                 //Find the connection for web_client_connected_service's channel number
