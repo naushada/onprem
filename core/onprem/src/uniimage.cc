@@ -535,17 +535,17 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 break;
                             }
 
-                            Http http(request);
-                            if(!http.uri().compare(0, 11, "/api/v1/dms")) {
+                            // Http http(request);
+                            //if(!http.uri().compare(0, 11, "/api/v1/dms")) {
                                 //Handle locally.
-                                auto rsp = svc->process_web_request(request, GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst());
-                                if(rsp.length()) {
-                                    auto ret = svc->tcp_tx(Fd, rsp);
-                                    break;
-                                }
-                            } else if(!http.uri().compare(0, 14, "/api/v1/device")) {
-                                //Pass to device.
+                            auto rsp = svc->process_web_request(request, GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst());
+                            if(rsp.length()) {
+                                auto ret = svc->tcp_tx(Fd, rsp);
+                                break;
                             }
+                            //} else if(!http.uri().compare(0, 14, "/api/v1/device")) {
+                                //Pass to device.
+                            //}
                             
                         }while(0);
                     }
