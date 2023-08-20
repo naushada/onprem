@@ -73,7 +73,7 @@ RUN apt-get -y install curl && \
     npm install @clr/core @clr/icons @clr/angular @clr/ui @webcomponents/webcomponentsjs --save
 
 WORKDIR /root/onprem/ui/webui
-RUN npm install
+RUN npm install && npm upgrade
 RUN ng build --configuration production --aot --base-href /webui/
 
 RUN cd /opt && \
