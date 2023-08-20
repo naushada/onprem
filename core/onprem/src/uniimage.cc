@@ -1768,8 +1768,8 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
         auto password = http.value("password");
 
         if(userid.length() > 0 && password.length() > 0) {
-            filter["logininfo.userid"] = userid;
-            filter["logininfo.password"] = password;
+            filter["userid"] = userid;
+            filter["password"] = password;
             auto response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
 
             auto Value = json::object();
