@@ -434,8 +434,22 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 DeleteService(serviceType, Fd);
                                 break;
                             }
-                            json Value = json::parse(request);
-                            //Store into DB , the device information.
+                            Http http(request);
+
+                            if(!http.uri().compare(0, 27, "/api/v1/dms/device/register")) {
+                                //Upon First connection of device to DMS.
+                                json Value = json::parse(http.body());
+                                //Write into DB now.
+                                auto serialnumber = Value["serialnumber"].get<std::string>();
+                                Value["status"]  = "online";
+                                 time_t now = time(0);
+                                Value["lastcommunicationndate"] = ctime((&now));
+
+                            } else {
+                                //Find the connection for web_client_connected_service's channel number
+                            }
+                            
+                            
 
                         }while(0);
                     }
