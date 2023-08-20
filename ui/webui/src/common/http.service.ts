@@ -41,11 +41,9 @@ export class HttpService {
       param = `userid=${id}&password=${pwd}`;
     }
 
-    let uri: string = "";
+    let uri: string = "/api/v1/dms/account";
     if(this.apiURL.length > 0) {
       uri = this.apiURL + "/api/v1/dms/account";
-    } else {
-      uri = "/api/v1/dms/account";
     }
 
     const options = {params: new HttpParams({fromString: param})};
@@ -67,12 +65,11 @@ export class HttpService {
   } 
    */
   createaccount(input:string): Observable<string> {
-    let uri: string = "";
+    let uri: string = "/api/v1/dms/account";
     if(this.apiURL.length > 0) {
       uri = this.apiURL + "/api/v1/dms/account";
-    } else {
-      uri = "/api/v1/dms/account";
     }
+
     return this.http.post<string>(uri, input, this.httpOptions);
   }
 
@@ -91,12 +88,11 @@ export class HttpService {
   } 
    */
   registerdevice(input:string): Observable<string> {
-    let uri: string = "";
+    let uri: string = "/api/v1/dms/register";
     if(this.apiURL.length > 0) {
       uri = this.apiURL + "/api/v1/dms/register";
-    } else {
-      uri = "/api/v1/dms/register";
     }
+
     return this.http.post<string>(uri, input, this.httpOptions);
   }
 
@@ -117,12 +113,11 @@ export class HttpService {
   } 
    */
   uploadsoftwarerelease(input:string): Observable<string> {
-    let uri: string = "";
+    let uri: string = "/api/v1/dms/swrelease";
     if(this.apiURL.length > 0) {
       uri = this.apiURL + "/api/v1/dms/swrelease";
-    } else {
-      uri = "/api/v1/dms/swrelease";
     }
+
     return this.http.post<string>(uri, input, this.httpOptions);
   }
 
@@ -136,13 +131,61 @@ export class HttpService {
   } 
   */
   getsoftwarerelease(): Observable<string> {
-    let uri: string = "";
+    let uri: string = "/api/v1/dms/swrelease";
+    
     if(this.apiURL.length > 0) {
       uri = this.apiURL + "/api/v1/dms/swrelease";
-    } else {
-      uri = "/api/v1/dms/swrelease";
     }
+
     return this.http.get<string>(uri);
+  }
+
+  /**
+   Request:
+   {
+    "serialnumber": "" ----- Optional
+   }
+
+   Response:
+   {
+    "status": "success/failure", ----> Mandatory
+    "details": "failure reason", ----> Conditional
+    "response": Array of JSON Object    ----> Optional
+   }
+
+   Contents of response is as below:
+   {
+    "serialnumber": "",
+    "status": ""
+    "model": "",
+    "lastcommunicationdate": "",
+    "osversion": "",
+    "osbuildnumber":"",
+    "firmware": "",
+    "cellular": [{
+      "carrier": "",
+      "technology": "",
+      "apn": "",
+      "signalstrength": "",
+      "ipaddress": "",
+      "imei":""
+    }]
+   } 
+   */
+  getdevicedetails(serialnumber?: string) {
+    let param = "all";
+
+    if(serialnumber && serialnumber.length > 0) {
+      param = `serialnumber=${serialnumber}`;
+    }
+
+    let uri: string = "/api/v1/device/details";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/device/details";
+    }
+
+    const options = {params: new HttpParams({fromString: param})};
+    return this.http.get<Array<string>>(uri, options);
   }
   
 }

@@ -1,1 +1,82 @@
 
+
+
+<clr-datagrid (clrDgSelectedChange)="onSelectionChanged($event)" [(clrDgSelected)]="selectedDevice">
+    <clr-dg-action-bar>
+        <div class="btn-group btn-primary">
+            <button class="btn">
+                <cds-icon shape="connect"></cds-icon>
+                Configuration</button>
+            <button class="btn">
+                <cds-icon shape="cog"></cds-icon>
+                Apply Template</button>
+            <button class="btn">
+                <cds-icon shape="upload"></cds-icon>
+                Firmware Update</button>
+            <button class="btn">Delete</button>
+        </div>
+    </clr-dg-action-bar>
+    <clr-dg-column>Status
+        <clr-dg-string-filter [clrDgStringFilter]="devicestatusFilter"></clr-dg-string-filter>
+    </clr-dg-column>
+    <clr-dg-column>Serial Number
+        <clr-dg-string-filter [clrDgStringFilter]="serialnumberFilter"></clr-dg-string-filter>
+    </clr-dg-column>
+    <clr-dg-column>Model
+        <clr-dg-string-filter [clrDgStringFilter]="productFilter"></clr-dg-string-filter>
+    </clr-dg-column>
+    <clr-dg-column>Last Communication Date</clr-dg-column>
+    <clr-dg-column>OS Version</clr-dg-column>
+    <clr-dg-column>OS Build Number</clr-dg-column>
+    <clr-dg-column>Firmware</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let device of devices" [clrDgItem]="device">
+        <clr-dg-cell>{{device.status}}</clr-dg-cell>
+        <clr-dg-cell>{{device.serialnumber}}</clr-dg-cell>
+        <clr-dg-cell>{{device.model}}</clr-dg-cell>
+        <clr-dg-cell>{{device.lastcommunicationdate}}</clr-dg-cell>
+        <clr-dg-cell>{{device.osversion}}</clr-dg-cell>
+        <clr-dg-cell>{{device.osbuildnumber}}</clr-dg-cell>
+        <clr-dg-cell>{{device.firmware}}</clr-dg-cell>
+        
+    </clr-dg-row>
+
+    <clr-dg-footer>
+		<clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems] = "devices.length">
+			<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Device per page</clr-dg-page-size>
+        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+        of {{pagination.totalItems}} Account
+        </clr-dg-pagination>
+    </clr-dg-footer>
+
+
+    <clr-dg-detail *clrIfDetail="let device">
+        <clr-dg-detail-header>WAN Details</clr-dg-detail-header>
+        <clr-dg-detail-body>
+            <clr-datagrid>
+                <clr-dg-column>Carrier</clr-dg-column>
+                <clr-dg-column>Technology</clr-dg-column>
+                <clr-dg-column>APN</clr-dg-column>
+                <clr-dg-column>Signal Strength</clr-dg-column>
+                <clr-dg-column>IP Address</clr-dg-column>
+                <clr-dg-column>IMEI</clr-dg-column>
+
+                <clr-dg-row *clrDgItems="let ent of device.cellular" [clrDgItem]="ent">
+                    <clr-dg-cell>{{ent.carrier}}</clr-dg-cell>
+                    <clr-dg-cell>{{ent.technology}}</clr-dg-cell>
+                    <clr-dg-cell>{{ent.apn}}</clr-dg-cell>
+                    <clr-dg-cell>{{ent.signalstrength}}</clr-dg-cell>
+                    <clr-dg-cell>{{ent.ipaddress}}</clr-dg-cell>
+                    <clr-dg-cell>{{ent.imei}}</clr-dg-cell>
+                </clr-dg-row>
+                <clr-dg-footer>
+                    <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems] = "device.cellular.length">
+                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Cellular per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} Cellular
+                    </clr-dg-pagination>
+                </clr-dg-footer>
+            </clr-datagrid>
+        </clr-dg-detail-body>
+    </clr-dg-detail>
+
+</clr-datagrid>

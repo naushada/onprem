@@ -10,7 +10,7 @@ import { ConfigComponent } from './pages/config/config.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { CdsIconModule, CdsModule } from '@cds/angular';
-import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon, newIcon } from '@cds/core/icon';
+import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon, newIcon, uploadIcon, connectIcon } from '@cds/core/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DmsMainComponent } from './pages/dms/dms-main/dms-main.component';
 import { CreateAccountComponent } from './pages/dms/create-account/create-account.component';
@@ -21,7 +21,8 @@ import { SwreleaseMainComponent } from './pages/swrelease/swrelease-main/swrelea
 import { CreateSwreleaseComponent } from './pages/swrelease/create-swrelease/create-swrelease.component';
 import { ListSwreleaseComponent } from './pages/swrelease/list-swrelease/list-swrelease.component';
 import { DeleteSwreleaseComponent } from './pages/swrelease/delete-swrelease/delete-swrelease.component';
-ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, newIcon);
+import { PasswordResetComponent } from './pages/resetpassword/password-reset/password-reset.component';
+ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, newIcon, uploadIcon, connectIcon);
 
 
 @NgModule({
@@ -39,7 +40,8 @@ ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, 
     SwreleaseMainComponent,
     CreateSwreleaseComponent,
     ListSwreleaseComponent,
-    DeleteSwreleaseComponent
+    DeleteSwreleaseComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,
