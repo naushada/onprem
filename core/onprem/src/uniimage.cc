@@ -321,11 +321,11 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                         (void)ret;
 
                         //Get Token for Rest Client
-                        json jobj = json::object();
-                        jobj["login"] = get_config()["userid"];
-                        jobj["password"] = get_config()["password"];
+                        json Value = json::object();
+                        Value["login"] = get_config()["userid"];
+                        Value["password"] = get_config()["password"];
 
-                        auto req = svc->restC().getToken(jobj.dump());
+                        auto req = svc->restC().getToken(Value.dump());
                         std::cout << "line: " << __LINE__ << " request sent: " << std::endl << req << std::endl;
                         auto len = svc->tls().write(req);
                         (void)len;
@@ -435,6 +435,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 break;
                             }
                             json jobj = json::parse(request);
+
                         }while(0);
                     }
                     break;
@@ -471,15 +472,15 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
 
                             if(!payload_len || payload_len < 0) {
                                 std::cout << "line: " << __LINE__ << " closing the client connection for serviceType: " << serviceType << " len: " << len << std::endl;
-                                DeleteService(serviceType, Fd);
                                 DeRegisterFromEPoll(Fd);
+                                DeleteService(serviceType, Fd);
                                 break;
                             } else {
                                 len = svc->tls().read(request, payload_len);
                                 if(len < 0 || !len) {
                                     std::cout << "line: " << __LINE__ << " closing the client connection for serviceType: " << serviceType << " len: " << len << std::endl;
-                                    DeleteService(serviceType, Fd);
                                     DeRegisterFromEPoll(Fd);
+                                    DeleteService(serviceType, Fd);
                                     break;
                                 } else if(len > 0) {
                                     json jobj = json::parse(request);
@@ -589,6 +590,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                         do {
                             auto ret = svc->tls().peek(out);
                             if(ret > 0) {
+
                                 Http http(out);
                                 status.assign(http.status_code());
                                 auto ct = http.value("Content-Length");
@@ -599,6 +601,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                     payload_len = std::stoi(ct);
                                     std::cout << "line: " << __LINE__ << " value of content-length: " << std::stoi(ct) << std::endl;
                                 }
+
                             } else if(!ret) {
                                 //TLS connection is closed
                                 std::cout << __TIMESTAMP__ << " line: " << __LINE__ << " tls connection is closed" << std::endl;
@@ -634,27 +637,29 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 break;
                             }
 
-                            if(!svc->restC().status_code().compare(0, 3, "401") || !svc->restC().status_code().compare(0, 3, "403")) {
+                            if(!svc->restC().status_code().compare(0, 3, "401") || 
+                               !svc->restC().status_code().compare(0, 3, "403")) {
                                 //missing authentication or invalid authentication
                                 //Get Token for Rest Client
-                                json jobj = json::object();
-                                jobj["login"] = get_config()["userid"];
-                                jobj["password"] = get_config()["password"];
+                                json Value = json::object();
+                                Value["login"] = get_config()["userid"];
+                                Value["password"] = get_config()["password"];
 
-                                auto req = svc->restC().getToken(jobj.dump());
+                                auto req = svc->restC().getToken(Value.dump());
                                 std::cout << "line: " << __LINE__ << " request sent: " << std::endl << req << std::endl;
                                 auto len = svc->tls().write(req);
                                 (void)len;
                                 break;
                             }
+
                             std::string result("");
                             auto req = svc->restC().processResponse(out, body, result);
                             if(result.length()) {
                                 //push result to remote server
-                                json jobj = json::parse(result);
+                                json Value = json::parse(result);
                                 
-                                if(jobj["serialNumber"] != nullptr) {
-                                    auto srNumber = jobj["serialNumber"].get<std::string>();
+                                if(Value["serialNumber"] != nullptr) {
+                                    auto srNumber = Value["serialNumber"].get<std::string>();
                                     //The key is the serial number
                                     getResponseCache().insert(std::pair(srNumber, result));
                                     std::cout << "line: " << __LINE__ << " serialNumber: " << srNumber << std::endl;
