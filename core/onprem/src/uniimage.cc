@@ -1966,25 +1966,24 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
 std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
     std::stringstream ss("");
     
-    if(!http.uri().compare(0, 15, "/api/v1/account")) {
+    if(!http.uri().compare(0, 19, "/api/v1/dms/account")) {
         auto body = json::parse(http.body());
         std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
-        //Create a new document in account collection.
-        auto response = dbinst.create_documentEx("account", http.body());
+        auto collection = "account";
+        auto filter = json::object();
+        filter["userid"] = http.value("userid");
+        auto response = dbinst.update_collectionEx(collection, filter.dump(), http.body());
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
-        auto jobj = json::object();
-        jobj["result"] = "success";
-        jobj["reason"] = "";
-        jobj["statuscode"] = 200;
-        jobj["ts"] = "";
-        jobj["ip"] = http.value("X-Forwarded-For");
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+        Value["response"] = "";
 
-        if(!response.length()) {
-            jobj["result"] = "failure";
-            jobj["statuscode"] = 500;
+        if(!response) {
+            Value["status"] = "failure";
         }
 
-        return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if(!http.uri().compare(0, 17, "/api/v1/grievance")) {
         //Create the Grievance 
