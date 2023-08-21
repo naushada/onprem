@@ -1378,6 +1378,10 @@ int main(std::int32_t argc, char *argv[]) {
             exit(0);
         }
         
+        std::string bridgeIP("192.168.1.1");
+        auto httpsPort = 443;
+        inst.CreateServiceAndRegisterToEPoll(noor::ServiceType::Tls_Tcp_Restclient_Service_Sync, bridgeIP, httpsPort);
+        
     } else if(!config["role"].compare("server")) {
 
         if(!config["server-ip"].length()) {
