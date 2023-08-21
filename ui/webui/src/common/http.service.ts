@@ -201,6 +201,8 @@ export class HttpService {
 
     if(serialnumber && serialnumber.length > 0) {
       param = `serialnumber=${serialnumber}`;
+    } else {
+      param = `serialnumber=${param}`;
     }
 
     let uri: string = "/api/v1/dms/device";
@@ -209,7 +211,7 @@ export class HttpService {
     }
 
     const options = {params: new HttpParams({fromString: param})};
-    return this.http.get<Array<string>>(uri, options);
+    return this.http.get<string>(uri, options);
   }
   
 }

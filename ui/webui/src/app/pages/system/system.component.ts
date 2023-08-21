@@ -39,9 +39,14 @@ export class SystemComponent {
   productFilter = new ProductFilter();
 
   constructor(private http: HttpService) {
-    http.getdevicedetails().subscribe((response: Array<string>) => {
+    http.getdevicedetails().subscribe((response: string) => {
       this.devices.length = 0;
-      response.forEach(ent => {this.devices.push(ent);})
+      let result = JSON.parse(JSON.stringify(response));
+      
+      if(result["status"] == "success") {
+        this.devices = JSON.parse(result["response"]);
+      }
+      //response.forEach(ent => {this.devices.push(ent);})
     },
     (error) => {},
     () => {});
