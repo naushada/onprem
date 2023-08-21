@@ -622,7 +622,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 Http http(out);
                                 status.assign(http.status_code());
                                 auto ct = http.value("Content-Length");
-                                header_len = http.get_header(out).length() + 1;
+                                header_len = http.get_header(out).length();
 
                                 if(ct.length() > 0) {
                                     //Content-Length is present
