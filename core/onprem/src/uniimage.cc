@@ -1815,7 +1815,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
             return(buildHttpResponseOK(http, Value.dump(), "application/json"));  
         }
 
-    } else if(!http.uri().compare(0, 17, "/api/v1/dms/device")) {
+    } else if(!http.uri().compare(0, 18, "/api/v1/dms/device")) {
         //Retrieve the Grievance Tickets 
         auto projection = json::object();
         projection["_id"] = false;
