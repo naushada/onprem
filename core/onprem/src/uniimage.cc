@@ -442,8 +442,10 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 //Write into DB now.
                                 auto serialnumber = Value["serialnumber"].get<std::string>();
                                 Value["status"]  = "online";
-                                 time_t now = time(0);
-                                Value["lastcommunicationdate"] = ctime(&now);
+                                time_t now = time(0);
+                                std::string strTime(ctime(&now));
+
+                                Value["lastcommunicationdate"] = strTime.erase(strTime.find('\n', 0), 1);
                                 auto &dbinst = GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst();
                                 auto collection = "device";
                                 auto filter = json::object();
