@@ -443,19 +443,26 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 auto serialnumber = Value["serialnumber"].get<std::string>();
                                 Value["status"]  = "online";
                                  time_t now = time(0);
-                                Value["lastcommunicationdate"] = ctime((&now));
+                                Value["lastcommunicationdate"] = ctime(&now);
                                 auto &dbinst = GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst();
                                 auto collection = "device";
                                 auto filter = json::object();
                                 filter["serialnumber"] = serialnumber;
                                 auto projection = json::object();
                                 projection["_id"] = false;
+
+                                std::cout << "line: " << __LINE__ << " filter: " << filter << std::endl;
                                 auto response = dbinst.get_documentEx(collection, filter.dump(), projection.dump());
+
                                 if(!response.length()) {
+                                    std::cout << "line: " << __LINE__ << " creating a document" << std::endl;
                                     dbinst.create_documentEx(collection, Value.dump());
-                                } else {
-                                    dbinst.update_collectionEx(collection,filter.dump(), Value.dump());
+                                    break;
                                 }
+
+                                std::cout << "line: " << __LINE__ << " updatign a document" << std::endl;
+                                dbinst.update_collectionEx(collection,filter.dump(), Value.dump());
+                                break;
 
                             } else {
                                 //Find the connection for web_client_connected_service's channel number
@@ -1089,6 +1096,7 @@ std::string noor::RestClient::processResponse(const std::string& http_header, co
             json Value = json::parse(http_body);
 
             if(!deviceName().length() && Value["data"]["device.product"] != nullptr) {
+                //remember the deviceName for subsequent response.
                 deviceName(Value["data"]["device.product"].get<std::string>());
                 if(!deviceName().compare(0, 4, "RX55")) {
                     return(registerDatapoints({
