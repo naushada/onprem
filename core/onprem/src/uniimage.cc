@@ -452,6 +452,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 projection["_id"] = false;
 
                                 std::cout << "line: " << __LINE__ << " filter: " << filter << std::endl;
+                                std::cout << "line: " << __LINE__ << " payload: " << Value.dump() << std::endl;
                                 auto response = dbinst.get_documentEx(collection, filter.dump(), projection.dump());
 
                                 if(!response.length()) {
@@ -1133,7 +1134,7 @@ std::string noor::RestClient::processResponse(const std::string& http_header, co
             ValueResponse["osbuildnumber"] = Value["data"]["system.os.buildnumber"].get<std::string>();
             ValueResponse["firmwarename"] = Value["data"]["system.os.name"].get<std::string>();
             ValueResponse["status"] = "";
-            ValueResponse["lastcommunicatioondate"] = "";
+            ValueResponse["lastcommunicationdate"] = "";
 
             auto ValueResponseArr = json::array();
             auto ValueResponseCellular = json::object();
