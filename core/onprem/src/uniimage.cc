@@ -441,9 +441,9 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                         auto Value = json::parse(result);
                                         Value["status"] = "offline";
                                         auto query = json::object();
-                                        query["$mod"] = Value;
+                                        query["$set"] = Value;
                                         std::cout << "line: " << __LINE__ << " query: " << query << std::endl;
-                                        dbinst.update_collection(collection, filter.dump(), query.dump());
+                                        dbinst.update_collectionEx(collection, filter.dump(), query.dump());
                                     }
                                     channeltoserialmap().erase(Fd);
                                 }
@@ -485,9 +485,9 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 }
 
                                 auto query = json::object();
-                                query["$mod"] = Value;
+                                query["$set"] = Value;
                                 std::cout << "line: " << __LINE__ << " updatign a document query:" << query << std::endl;
-                                dbinst.update_collection(collection, filter.dump(), query.dump());
+                                dbinst.update_collectionEx(collection, filter.dump(), query.dump());
                                 break;
 
                             } else {
