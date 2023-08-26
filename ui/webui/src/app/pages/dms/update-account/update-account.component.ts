@@ -31,8 +31,8 @@ export class UpdateAccountComponent {
   onSubmit() {
     let request = {...this.updateaccountForm.value};
 
-    this.http.createaccount(JSON.stringify(request)).subscribe((response: string) => {
-      alert("Account Created Successfully");
+    this.http.updateaccount(JSON.stringify(request)).subscribe((response: string) => {
+      alert("Account Updated Successfully");
       this.updateaccountForm.reset('');
     },
     (error) => {},

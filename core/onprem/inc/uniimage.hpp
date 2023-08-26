@@ -531,7 +531,7 @@ class noor::Service {
         std::string handleGetMethod(Http& http, auto& dbinst);
         std::string handlePostMethod(Http& http, auto& dbinst);
         std::string handlePutMethod(Http& http, auto& dbinst);
-        std::string handleDeleteMethod(Http& http);
+        std::string handleDeleteMethod(Http& http, auto&  dbinst);
         std::string handleOptionsMethod(Http& http);
         
         std::string buildHttpResponse(Http& http, const std::string& rsp_body);

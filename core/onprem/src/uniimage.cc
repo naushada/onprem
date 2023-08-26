@@ -447,7 +447,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                         dbinst.update_collectionEx(collection, filter.dump(), query.dump());
                                     }
                                     channeltoserialmap().erase(Fd);
-                                    std::cout << "line: " << __LINE__ << " channeltoserialmap.count: " << m_channeltoserialmap().count() << std::endl;
+                                    std::cout << "line: " << __LINE__ << " channeltoserialmap().size: " << channeltoserialmap().size() << std::endl;
                                 }
 
                                 //TCP Connection is closed.
@@ -2012,7 +2012,10 @@ std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
         auto collection = "account";
         auto filter = json::object();
         filter["userid"] = http.value("userid");
-        auto response = dbinst.update_collectionEx(collection, filter.dump(), http.body());
+        auto document = json::object();
+        document["$set"] = body;
+
+        auto response = dbinst.update_collectionEx(collection, filter.dump(), document.dump());
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
         auto Value = json::object();
         Value["status"] = "success";
@@ -2115,7 +2118,26 @@ std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
     return(std::string());
 }
 
-std::string noor::Service::handleDeleteMethod(Http& http) {
+std::string noor::Service::handleDeleteMethod(Http& http, auto& dbinst) {
+    if(!http.uri().compare(0, 19, "/api/v1/dms/account")) {
+        auto body = json::parse(http.body());
+        std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
+        auto collection = "account";
+        auto filter = json::object();
+        filter["userid"] = http.value("userid");
+        auto response = dbinst.delete_document(collection, filter.dump());
+        std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+        Value["response"] = "";
+
+        if(!response) {
+            Value["status"] = "failure";
+        }
+
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
+    }
 }
 
 
@@ -2131,7 +2153,7 @@ std::string noor::Service::process_web_request(const std::string& req, auto& dbi
     } else if(!http.method().compare("OPTIONS")) {
         return(handleOptionsMethod(http));
     } else if(!http.method().compare("DELETE")) {
-        return(handleDeleteMethod(http));
+        return(handleDeleteMethod(http, dbinst));
     } else {
         //Error
     }

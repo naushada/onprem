@@ -73,6 +73,28 @@ export class HttpService {
     return this.http.post<string>(uri, input, this.httpOptions);
   }
 
+  updateaccount(input:string): Observable<string> {
+    let uri: string = "/api/v1/dms/account";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/account";
+    }
+
+    return this.http.put<string>(uri, input, this.httpOptions);
+  }
+
+  deleteaccount(userid:string): Observable<string> {
+    let param = "";
+    param = `userid=${userid}`;
+
+    let uri: string = "/api/v1/dms/account";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/account";
+    }
+    
+    const options = {params: new HttpParams({fromString: param})};
+    return this.http.delete<string>(uri, options);
+  }
+
   /**
   Request:
    {
