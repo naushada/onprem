@@ -7,7 +7,7 @@
             <div class="clr-col-auto clr-col-lg" >
                 <clr-input-container>
                     <label for="templatename">Template (Config) </label>
-                    <input type="file" clrInput name="templatename" formControlName="templatename" >
+                    <input type="file" clrInput name="templatename" formControlName="templatename" (change)="onChange($event)">
                 </clr-input-container>
             </div>
             <div class="clr-col-auto clr-col-lg">

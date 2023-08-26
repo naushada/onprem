@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import * as fs from 'file-saver';
 
 @Component({
   selector: 'app-config',
@@ -22,6 +23,24 @@ export class ConfigComponent {
 
   }
   onChange(event:any) {
+    const fileReader = new FileReader();
+    
 
+    fileReader.onload = (event) => {
+      let binaryData = event.target?.result;
+      alert(binaryData);
+    }
+
+    fileReader.onloadend = (event) => {
+      console.log(fileReader.result);
+    }
+
+    fileReader.onerror = (event) => {
+      console.log(event);
+    }
+    
+    fileReader.readAsText(event.target.files[0]);
   }
+
+
 }
