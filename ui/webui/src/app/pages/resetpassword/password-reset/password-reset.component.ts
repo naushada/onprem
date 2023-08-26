@@ -30,7 +30,16 @@ export class PasswordResetComponent {
 
   onPasswordReset() {
 
-    let request = {...this.passwordresetForm.value};
+    if(this.passwordresetForm.value.password != this.passwordresetForm.value.confirmpassword) {
+      alert("password and confirmpassword is not same!");
+      return;
+    }
+    
+    let request = {
+      "userid": this.passwordresetForm.value.userid,
+      "password": this.passwordresetForm.value.password
+    };
+
     this.http.updateaccount(JSON.stringify(request)).subscribe((response: string) => {
       this.opened = false;
     },
