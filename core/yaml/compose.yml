@@ -1,14 +1,27 @@
 version: '3'
 services: 
-  oyster_web_portal:
+  dms:
     image: naushada/onprem:1.0
     ports: 
-      - 58080:58080
+      - 192.168.0.181:58080:58080
       - 58989:58989
-    volumes:
-      - /home/mnahmed/sw/git/onprem/build:/opt/xAPP/uniimage
-      - /home/mnahmed/sw/git/onprem/ui/webui/dist:/opt/xAPP/webgui
-    environment:
-      - PORT=58080
-      - ARGS="--webport 58080 --role server --protocol tcp --timeout 1000 --server-port 58989 --mongodb-uri mongodb+srv://<userid>:<password>@cluster0.acpda.mongodb.net/<database>?maxPoolSize=50"
+    command:
+      - /opt/xAPP/uniimage/uniimage
+      - --web-port 58080
+      - --server-port 58989
+      - --protocol tcp
+      - --role server
+      - --timeout 1000
+      - --mongodb-uri mongodb://onprem:onprem123@192.168.0.181/onprem?maxPoolSize=50
+  restc:
+    image: naushada/onprem:1.0
+    command:
+      - /opt/xAPP/uniimage/uniimage
+      - --server-ip 192.168.0.181
+      - --server-port 58989
+      - --protocol tcp
+      - --role client
+      - --timeout 1000
+      - --userid test
+      - --password test123
     
