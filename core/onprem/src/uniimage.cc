@@ -428,8 +428,27 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                             std::cout << "line: " << __LINE__ << " result: " << result << " connected client " << std::endl;
 
                             if(!result) {
+                                auto serialnumber = get_serialnumber(Fd);
+                                if(serialnumber.length()) {
+                                    
+                                    auto collection = "device";
+                                    auto filter = json::object();
+                                    filter["serialnumber"] = serialnumber;
+                                    auto it = getResponseCache().find(serialnumber);
+                                    if(it != getResponseCache().end()) {
+                                        auto &dbinst = GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst();
+                                        auto result = it->second;
+                                        auto Value = json::parse(result);
+                                        Value["status"] = "offline";
+                                        auto query = json::object();
+                                        query["$mod"] = Value;
+                                        std::cout << "line: " << __LINE__ << " query: " << query << std::endl;
+                                        dbinst.update_collection(collection, filter.dump(), query.dump());
+                                    }
+                                }
+
                                 //TCP Connection is closed.
-                                std::cout << "line: " << __LINE__ << " closing the client connection " << std::endl;
+                                std::cout << "line: " << __LINE__ << " closing the client connection for service: " << serviceType << std::endl;
                                 DeRegisterFromEPoll(Fd);
                                 DeleteService(serviceType, Fd);
                                 break;
@@ -444,7 +463,8 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 Value["status"]  = "online";
                                 time_t now = time(0);
                                 std::string strTime(ctime(&now));
-
+                                //remember the Fd for this serialnumber.
+                                channeltoserialmap(Fd, serialnumber);
                                 Value["lastcommunicationdate"] = strTime.erase(strTime.find('\n', 0), 1);
                                 auto &dbinst = GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst();
                                 auto collection = "device";
@@ -464,7 +484,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 }
 
                                 auto query = json::object();
-                                query["$mod"] = json::parse(Value.dump());
+                                query["$mod"] = Value
                                 std::cout << "line: " << __LINE__ << " updatign a document" << std::endl;
                                 dbinst.update_collection(collection, filter.dump(), query.dump());
                                 break;
@@ -698,8 +718,8 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 //push result to remote server
                                 json Value = json::parse(result);
                                 
-                                if(Value["serialNumber"] != nullptr) {
-                                    auto srNumber = Value["serialNumber"].get<std::string>();
+                                if(Value["serialnumber"] != nullptr) {
+                                    auto srNumber = Value["serialnumber"].get<std::string>();
                                     //The key is the serial number
                                     getResponseCache().insert(std::pair(srNumber, result));
                                     std::cout << "line: " << __LINE__ << " serialNumber: " << srNumber << std::endl;

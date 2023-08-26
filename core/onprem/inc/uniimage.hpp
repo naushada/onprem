@@ -111,18 +111,36 @@ class noor::Uniimage {
             return(m_cache);
         }
 
-        Uniimage() : m_epollFd(-1), m_evts(), m_services(), m_cache() {}
+        Uniimage() : m_epollFd(-1), m_evts(), m_services(), m_cache(), m_channeltoserialmap() {}
+
         ~Uniimage() {
             ::close(m_epollFd);
             m_services.clear();
             m_cache.clear();
             m_evts.clear();
             m_config.clear();
+            m_channeltoserialmap.clear();
         }
 
         std::unordered_map<std::string, std::string> get_config() const {return(m_config);}
         void set_config(std::unordered_map<std::string, std::string> cfg) {m_config = cfg;}
-        
+
+        auto& channeltoserialmap() {
+            return(m_channeltoserialmap);
+        }
+
+        void channeltoserialmap(std::int32_t channel, std::string serialnumber) {
+            m_channeltoserialmap.insert(std::make_pair(channel, serialnumber));
+        }
+
+        std::string get_serialnumber(std::int32_t channel) const {
+            auto it = m_channeltoserialmap.find(channel);
+            if(it != m_channeltoserialmap.end()) {
+                return(it->second);
+            }
+            return(std::string());
+        }
+
 
     private:
         std::int32_t m_epollFd;
@@ -131,7 +149,7 @@ class noor::Uniimage {
         //The key is serial number of device. and value is json object.
         std::unordered_map<std::string, std::string> m_cache;
         std::unordered_map<std::string, std::string> m_config;
-        
+        std::unordered_map<std::int32_t, std::string> m_channeltoserialmap;
 };
 
 /**
