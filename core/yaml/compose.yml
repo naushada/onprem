@@ -13,7 +13,7 @@ services:
       - --role server
       - --timeout 1000
       - --mongodb-uri mongodb://onprem:onprem123@192.168.0.181/onprem?maxPoolSize=50
-  restc:
+  dmc:
     image: naushada/onprem:1.0
     command:
       - /opt/xAPP/uniimage/uniimage
