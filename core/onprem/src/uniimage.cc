@@ -464,7 +464,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 }
 
                                 auto query = json::object();
-                                query["$set"] = Value.dump();
+                                query["$mod"] = json::parse(Value.dump());
                                 std::cout << "line: " << __LINE__ << " updatign a document" << std::endl;
                                 dbinst.update_collection(collection, filter.dump(), query.dump());
                                 break;
