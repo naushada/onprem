@@ -445,6 +445,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                         std::cout << "line: " << __LINE__ << " query: " << query << std::endl;
                                         dbinst.update_collection(collection, filter.dump(), query.dump());
                                     }
+                                    channeltoserialmap().erase(Fd);
                                 }
 
                                 //TCP Connection is closed.
@@ -484,7 +485,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                 }
 
                                 auto query = json::object();
-                                query["$mod"] = Value
+                                query["$mod"] = Value;
                                 std::cout << "line: " << __LINE__ << " updatign a document" << std::endl;
                                 dbinst.update_collection(collection, filter.dump(), query.dump());
                                 break;
