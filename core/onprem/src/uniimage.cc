@@ -429,6 +429,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
 
                             if(!result) {
                                 auto serialnumber = get_serialnumber(Fd);
+                                std::cout << "line: " << __LINE__ << " serialnumber: " << serialnumber << std::endl;
                                 if(serialnumber.length()) {
                                     
                                     auto collection = "device";
@@ -446,6 +447,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                                         dbinst.update_collectionEx(collection, filter.dump(), query.dump());
                                     }
                                     channeltoserialmap().erase(Fd);
+                                    std::cout << "line: " << __LINE__ << " channeltoserialmap.count: " << m_channeltoserialmap().count() << std::endl;
                                 }
 
                                 //TCP Connection is closed.
