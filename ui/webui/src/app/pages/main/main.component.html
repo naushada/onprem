@@ -5,14 +5,14 @@
       </span>
       
       <div class="header-actions">
+        <span style="margin-top: 20px;font-size: 18px"><b>{{userid}}</b></span>
         <clr-dropdown>
           <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
-            {{userid}}
               <cds-icon shape="user" size="md"></cds-icon>
               <cds-icon shape="angle" direction="down" size="sm"></cds-icon>
           </button>
           <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-            <a href="..." clrDropdownItem>About</a>
+            <a href="..." clrDropdownItem>{{userid}}</a>
             <a href="..." clrDropdownItem>Preferences</a>
             <a routerLink="/login" clrDropdownItem>Log out</a>
           </clr-dropdown-menu>
