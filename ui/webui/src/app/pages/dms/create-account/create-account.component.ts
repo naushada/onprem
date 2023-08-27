@@ -33,7 +33,7 @@ export class CreateAccountComponent {
     //alert("The request: " + request);
     //console.log(request);
     this.http.createaccount(JSON.stringify(request)).subscribe((response: string) => {
-      let responseobject = JSON.parse(response);
+      let responseobject = JSON.parse(JSON.stringify(response));
       if(responseobject["status"] == "success") {
         alert("Account Created Successfully");
         this.createaccountForm.reset('');

@@ -22,7 +22,7 @@ export class DeleteAccountComponent {
     let request = {...this.deleteaccountForm.value};
 
     this.http.deleteaccount(JSON.stringify(request)).subscribe((response: string) => {
-      let responseobject = JSON.parse(response);
+      let responseobject = JSON.parse(JSON.stringify(response));
       if(responseobject["status"] == "success") {
         alert("Account Deleted Successfully");
         this.deleteaccountForm.reset('');

@@ -32,7 +32,7 @@ export class UpdateAccountComponent {
     let request = {...this.updateaccountForm.value};
 
     this.http.updateaccount(JSON.stringify(request)).subscribe((response: string) => {
-      let responseobject = JSON.parse(response);
+      let responseobject = JSON.parse(JSON.stringify(response));
       if(responseobject["status"] == "success") {
         alert("Account Updated Successfully");
         this.updateaccountForm.reset('');
