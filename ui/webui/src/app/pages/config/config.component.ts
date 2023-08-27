@@ -25,8 +25,9 @@ export class ConfigComponent {
   }
 
   onSubmit() {
+    this.filename = this.uploadTemplateForm.value.templatename;
     let request = {
-      "filename": this.filename,
+      "filename": this.filename.substring(this.filename.lastIndexOf('/')+1),
       "productmodel": this.product,
       "fwversion": this.fwversion,
       "createdon": "",
@@ -56,15 +57,15 @@ export class ConfigComponent {
     fileReader.onloadend = (event) => {
       //console.log(fileReader.result);
       this.template = btoa(fileReader.result as string);
-      let result = JSON.parse(JSON.stringify(fileReader.result));
+      let result = JSON.parse(fileReader.result as string);
 
       console.log(result);
-      console.log(result["info"]["product"]);
+      console.log(result["info.product"]);
 
-      if(result["info"]["product"] == this.uploadTemplateForm.value.devicemodel) {
+      if(result["info.product"] == this.uploadTemplateForm.value.devicemodel) {
         if(this.template.length <= 16000000) {
-          this.product = result["info"]["product"];
-          this.fwversion = result["info"]["version"];
+          this.product = result["info.product"];
+          this.fwversion = result["info.version"];
         } else {
           alert("Template size is > 16MB");
         }
