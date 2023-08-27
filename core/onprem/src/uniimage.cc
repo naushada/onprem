@@ -2011,7 +2011,7 @@ std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
         std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
         auto collection = "account";
         auto filter = json::object();
-        filter["userid"] = http.value("userid");
+        filter["userid"] = body["userid"];
         auto document = json::object();
         document["$set"] = body;
 

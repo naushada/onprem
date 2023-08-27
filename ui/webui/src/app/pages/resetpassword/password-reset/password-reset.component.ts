@@ -42,6 +42,12 @@ export class PasswordResetComponent {
 
     this.http.updateaccount(JSON.stringify(request)).subscribe((response: string) => {
       this.opened = false;
+      let responseobject = JSON.parse(response);
+      if(responseobject["status"] == "success") {
+        alert("Password is set successfully")
+      } else {
+        alert("Password set is failed");
+      }
     },
     (error) => {},
     () => {});
