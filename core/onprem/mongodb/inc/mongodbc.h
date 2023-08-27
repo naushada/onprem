@@ -51,6 +51,7 @@ class MongodbClient {
         bool delete_documentEx(std::string coll, std::string shippingRecord);
         
         std::string create_document(std::string dbName, std::string coll, std::string accountRecord);
+        std::string create_document(std::string collectionName, std::string doc);
         std::int32_t create_bulk_document(std::string dbName, std::string coll, std::string doc);
 
         std::string create_documentEx(std::string coll, std::string accountRecord);

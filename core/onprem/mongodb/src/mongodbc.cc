@@ -290,6 +290,40 @@ std::string MongodbClient::create_document(std::string dbName, std::string colle
     return(std::string());
 }
 
+/**
+ * @brief this member function insert singlr document in a collection and returns the inserted OID
+ * 
+ * @param dbName 
+ * @param collectionName 
+ * @param doc 
+ * @return std::string 
+ */
+std::string MongodbClient::create_document(std::string collectionName, std::string doc)
+{
+    bsoncxx::document::value document = bsoncxx::from_json(doc.c_str());
+    
+    auto conn = mMongoConnPool->acquire();
+    if(!conn) {
+        return(std::string());
+    }
+
+    mongocxx::database dbInst = conn->database(get_database().c_str());
+    if(!dbInst) {
+        return(std::string());
+    }
+
+    auto collection = dbInst.collection(collectionName.c_str());
+    bsoncxx::stdx::optional<mongocxx::result::insert_one> result = collection.insert_one(document.view());
+
+    if(result) {
+        bsoncxx::oid oid = result->inserted_id().get_oid().value;
+        std::string JobID = oid.to_string();
+        return(JobID);
+    }
+
+    return(std::string());
+}
+
 std::string MongodbClient::get_byOID(std::string coll, std::string projection, std::string oid)
 {
     auto conn = mMongoConnPool->acquire();

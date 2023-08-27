@@ -1810,7 +1810,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
         if(userid.length() > 0 && password.length() > 0) {
             filter["userid"] = userid;
             filter["password"] = password;
-            auto response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
+            auto response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
 
             auto Value = json::object();
             Value["status"] = "success";
@@ -1829,10 +1829,10 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
         if(userid.length()) {
 
             if(!userid.compare(0, 3, "all")) {
-                response = dbinst.get_documentsEx(collectionname, filter.dump(), projection.dump());
+                response = dbinst.get_documents(collectionname, filter.dump(), projection.dump());
             } else {
                 filter["userid"] = userid;
-                response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
+                response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
             }
 
             auto Value = json::object();
@@ -1856,11 +1856,11 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
         if(serialnumber.length() > 0) {
             if(!serialnumber.compare(0, 3, "all")) {
                 //Get All Account Documents fron grievance Collection
-                response = dbinst.get_documentsEx(collectionname, filter.dump(), projection.dump());
+                response = dbinst.get_documents(collectionname, filter.dump(), projection.dump());
                 //std::cout << "line: " << __LINE__ << " response: "  << response << std::endl;
             } else {
                 filter["serialnumber"] = serialnumber;
-                response = dbinst.get_documentEx(collectionname, filter.dump(), projection.dump());
+                response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
                 //std::cout << "line: " << __LINE__ << " response: "  << response << std::endl;
             }
 
@@ -1946,7 +1946,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto collectionname = "account";
         std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
         //Create a new document in account collection.
-        auto response = dbinst.create_documentEx(collectionname, http.body());
+        auto response = dbinst.create_document(collectionname, http.body());
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
         auto Value = json::object();
         Value["status"] = "success";
@@ -1980,7 +1980,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         Value["details"] = "";
 
         if(!response.length()) {
-            response = dbinst.create_documentEx(collectionname, http.body());
+            response = dbinst.create_document(collectionname, http.body());
             Value["response"] = "{\"oid\": " +  response + "}";
         } else  {
             Value["response"] = "{\"serialnumber\": " +  response + "}";
@@ -2018,7 +2018,7 @@ std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
         auto document = json::object();
         document["$set"] = body;
 
-        auto response = dbinst.update_collectionEx(collection, filter.dump(), document.dump());
+        auto response = dbinst.update_collection(collection, filter.dump(), document.dump());
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
         auto Value = json::object();
         Value["status"] = "success";
@@ -2091,7 +2091,7 @@ std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
         auto response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
 
         if(!response.length()) {
-            response = dbinst.create_documentEx(collectionname, http.body());
+            response = dbinst.create_document(collectionname, http.body());
         } else {
             //update the document.
             std::stringstream document;
