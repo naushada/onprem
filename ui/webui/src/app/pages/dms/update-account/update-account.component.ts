@@ -32,8 +32,13 @@ export class UpdateAccountComponent {
     let request = {...this.updateaccountForm.value};
 
     this.http.updateaccount(JSON.stringify(request)).subscribe((response: string) => {
-      alert("Account Updated Successfully");
-      this.updateaccountForm.reset('');
+      let responseobject = JSON.parse(response);
+      if(responseobject["status"] == "success") {
+        alert("Account Updated Successfully");
+        this.updateaccountForm.reset('');
+      } else {
+        alert("Account Update Failed!");
+      }
     },
     (error) => {},
     () => {});

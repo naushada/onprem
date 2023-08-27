@@ -22,8 +22,13 @@ export class DeleteAccountComponent {
     let request = {...this.deleteaccountForm.value};
 
     this.http.deleteaccount(JSON.stringify(request)).subscribe((response: string) => {
-      alert("Account Deleted Successfully");
-      this.deleteaccountForm.reset('');
+      let responseobject = JSON.parse(response);
+      if(responseobject["status"] == "success") {
+        alert("Account Deleted Successfully");
+        this.deleteaccountForm.reset('');
+      } else {
+        alert("Account Deletion Failed!");
+      }
     },
     (error) => {},
     () => {});
