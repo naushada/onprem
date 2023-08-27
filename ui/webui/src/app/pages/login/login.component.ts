@@ -35,10 +35,15 @@ export class LoginComponent {
     }
     
     this.http.getlogininfo(this.username, this.password).subscribe((accountinfo:string) => {
-      let id:string = "user.login";
-      let document: string = JSON.stringify(accountinfo);
-      this.event.publish({id, document});
-      this.rt.navigateByUrl('/main');
+      let response = JSON.parse(accountinfo);
+      if(response["status"] == "success") {
+        let id:string = "user.login";
+        let document: string = JSON.stringify(accountinfo);
+        this.event.publish({id, document});
+        this.rt.navigateByUrl('/main');
+      } else {
+        alert("Authentication Failed");
+      }
     },
     (error) => {
       alert("Invalid Credentials");
