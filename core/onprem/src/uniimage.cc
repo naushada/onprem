@@ -1999,7 +1999,18 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto querydocument = json::object();
         
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
+        auto collectionname = "template";
+        auto response = dbinst.create_document(collectionname, http.body());
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+        Value["response"] = response;
+        
+        if(!response.length()) {
 
+            Value["status"] = "failure";
+        }
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
     } else {
 
     }

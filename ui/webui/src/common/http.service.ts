@@ -25,6 +25,15 @@ export class HttpService {
     })
   }
 
+  createtemplate(input:string): Observable<string> {
+    let uri: string = "/api/v1/dms/template";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/template";
+    }
+
+    return this.http.post<string>(uri, input, this.httpOptions);
+  }
+
   /*
   Response Format will be as below JSON Object
   {
