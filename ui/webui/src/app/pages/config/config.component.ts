@@ -14,6 +14,7 @@ export class ConfigComponent {
   template:string = "";
   product:string = "";
   fwversion:string = "";
+  filename:string = "";
 
   constructor(private fb: FormBuilder, private http: HttpService) {
     this.uploadTemplateForm = fb.group({
@@ -25,7 +26,7 @@ export class ConfigComponent {
 
   onSubmit() {
     let request = {
-      "filename": this.uploadTemplateForm.value.templatename,
+      "filename": this.filename,
       "productmodel": this.product,
       "fwversion": this.fwversion,
       "createdon": "",
@@ -35,7 +36,7 @@ export class ConfigComponent {
     this.http.createtemplate(JSON.stringify(request)).subscribe((response: string) => {
       let result = JSON.parse(JSON.stringify(response));
       if(result["status"] == "success") {
-        alert("Template: " + this.uploadTemplateForm.value.templatename + " Released sucessfully");
+        alert("Template: " + this.filename + " Released sucessfully");
       } else {
         alert("Template Release Failed");
       }
@@ -44,9 +45,9 @@ export class ConfigComponent {
     () => {});
   }
   onChange(event:any) {
-    const fileReader = new FileReader();
-    
+    this.filename = event.target.files[0];
 
+    const fileReader = new FileReader();
     fileReader.onload = (event) => {
       let binaryData = event.target?.result;
       console.log(binaryData);
@@ -54,16 +55,16 @@ export class ConfigComponent {
 
     fileReader.onloadend = (event) => {
       //console.log(fileReader.result);
-      this.template = JSON.stringify(fileReader.result);
-      let result = JSON.parse(this.template);
+      this.template = btoa(fileReader.result as string);
+      let result = JSON.parse(JSON.stringify(fileReader.result));
 
       console.log(result);
-      console.log(result["info.product"]);
+      console.log(result["info"]["product"]);
 
-      if(result["info.product"] == this.uploadTemplateForm.value.devicemodel) {
+      if(result["info"]["product"] == this.uploadTemplateForm.value.devicemodel) {
         if(this.template.length <= 16000000) {
-          this.product = result["info.product"];
-          this.fwversion = result["info.version"]
+          this.product = result["info"]["product"];
+          this.fwversion = result["info"]["version"];
         } else {
           alert("Template size is > 16MB");
         }
