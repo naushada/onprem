@@ -11,6 +11,7 @@ export class MainComponent {
 
   selectedItem:string = "Config";
   role:string = "basic";
+  userid: string = "";
   constructor(private event: EventService) {
     event.subscribe("user.login", (id:String, document:string) => {
       if(id == "user.login") {
@@ -19,6 +20,7 @@ export class MainComponent {
         //console.log(response["response.role"]);
         if(response["status"] == "success") {
           this.role = JSON.parse(response["response"])["role"];
+          this.userid = JSON.parse(response["response"])["userid"];
         } else {
           this.role = "basic";
         }
