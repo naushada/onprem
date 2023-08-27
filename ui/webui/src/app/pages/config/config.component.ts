@@ -28,7 +28,7 @@ export class ConfigComponent {
 
     fileReader.onload = (event) => {
       let binaryData = event.target?.result;
-      alert(binaryData);
+      console.log(binaryData);
     }
 
     fileReader.onloadend = (event) => {
