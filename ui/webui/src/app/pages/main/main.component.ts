@@ -15,7 +15,7 @@ export class MainComponent {
   constructor(private event: EventService) {
     event.subscribe("user.login", (id:String, document:string) => {
       if(id == "user.login") {
-        let response = JSON.parse(document);
+        let response = JSON.parse(JSON.stringify(document));
         if(response["status"] == "success") {
           let result = JSON.parse(response["response"]);
           this.role = result["role"];

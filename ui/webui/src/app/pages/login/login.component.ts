@@ -40,10 +40,12 @@ export class LoginComponent {
     }
     
     this.http.getlogininfo(this.username, this.password).subscribe((accountinfo:string) => {
-      let response = JSON.parse(accountinfo);
+      let response = JSON.parse(JSON.stringify(accountinfo));
       if(response["status"] == "success") {
+        console.log(response);
+        console.log(accountinfo);
         let id:string = "user.login";
-        let document: string = JSON.stringify(accountinfo);
+        let document: string = accountinfo;
         this.event.publish({id, document});
         this.rt.navigateByUrl('/main');
       } else {
