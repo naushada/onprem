@@ -94,4 +94,4 @@ RUN cp /root/onprem/core/onprem/build/uniimage .
 # ENTRYPOINT [ "/opt/xAPP/uniimage/uniimage" ]
 ENV ARGS="--role server --server-port 58989  --protocol tcp --mongodb-uri mongodb+srv://<id>:<pwd>@cluster0.acpda.mongodb.net/<database>?maxPoolSize=50"
 ENV PORT=58080
-CMD [ /opt/xAPP/uniimage/uniimage --web-port ${PORT} ${ARGS} ]
+CMD [ "/opt/xAPP/uniimage/uniimage" "--web-port" ${PORT} ${ARGS} ]
