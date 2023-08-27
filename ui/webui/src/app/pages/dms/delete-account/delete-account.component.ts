@@ -19,9 +19,8 @@ export class DeleteAccountComponent {
 
 
   onSubmit() {
-    let request = {...this.deleteaccountForm.value};
 
-    this.http.deleteaccount(JSON.stringify(request)).subscribe((response: string) => {
+    this.http.deleteaccount(this.deleteaccountForm.value.userid).subscribe((response: string) => {
       let responseobject = JSON.parse(JSON.stringify(response));
       if(responseobject["status"] == "success") {
         alert("Account Deleted Successfully");
