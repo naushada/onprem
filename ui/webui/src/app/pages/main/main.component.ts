@@ -16,11 +16,10 @@ export class MainComponent {
     event.subscribe("user.login", (id:String, document:string) => {
       if(id == "user.login") {
         let response = JSON.parse(document);
-        //console.log(response);
-        //console.log(response["response.role"]);
         if(response["status"] == "success") {
-          this.role = JSON.parse(response["response"])["role"];
-          this.userid = JSON.parse(response["response"])["userid"];
+          let result = JSON.parse(response["response"]);
+          this.role = result["role"];
+          this.userid = result["userid"];
         } else {
           this.role = "basic";
         }

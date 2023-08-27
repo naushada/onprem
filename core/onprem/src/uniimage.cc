@@ -1816,6 +1816,9 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
             Value["status"] = "success";
             Value["details"] = "";
             Value["response"] = response;
+            if(!response.length()) {
+                Value["status"] = "failure";
+            }
 
             return(buildHttpResponseOK(http, Value.dump(), "application/json"));
         }
