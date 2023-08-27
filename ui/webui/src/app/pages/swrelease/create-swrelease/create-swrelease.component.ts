@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { tar } from 'tar-fs';
-import { fs } from 'fs';
+//import { extract, pack, on } from 'tar-fs';
+//import { fs } from 'fs';
 
 
 @Component({
@@ -20,7 +20,20 @@ export class CreateSwreleaseComponent {
 
   }
 
-  onSubmit() {
+  onChange(event:any) {
+    /*
+    const extractFilesDirs = extract(this.createSwReleaseForm.value.fwreleasename, {
+      ignore (x:any, header:any) {
+        // pass files & directories, ignore e.g. symlinks
+        return header.type !== 'file' && header.type !== 'directory'
+      }
+    });
 
+    console.log(extractFilesDirs);
+    */
+  }
+
+  onSubmit() {
+    
   }
 }

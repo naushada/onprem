@@ -8,7 +8,7 @@
             <div class="clr-col-auto clr-col-lg" >
                 <clr-input-container>
                     <label for="fwreleasename">Firmware Release </label>
-                    <input type="file" clrInput name="fwreleasename" formControlName="fwreleasename">
+                    <input type="file" clrInput name="fwreleasename" formControlName="fwreleasename" (change)="onChange($event)">
                 </clr-input-container>
             </div>
             <div class="clr-col-auto clr-col-lg">
