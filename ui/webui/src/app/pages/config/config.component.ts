@@ -25,12 +25,18 @@ export class ConfigComponent {
   }
 
   onSubmit() {
-    this.filename = this.uploadTemplateForm.value.templatename;
+    let filepath = this.uploadTemplateForm.value.templatename;
+    this.filename = filepath.substring(filepath.lastIndexOf('\\') + 1 );
+
+    if(this.filename == filepath) {
+      this.filename = filepath.substring(filepath.lastIndexOf('/') + 1 );
+    }
+
     let request = {
-      "filename": this.filename.substring(this.filename.lastIndexOf('\\') + 1 ),
+      "filename": this.filename,
       "productmodel": this.product,
       "fwversion": this.fwversion,
-      "createdon": "",
+      "createdon": new Date(),
       "content": this.template
     }
 
@@ -45,7 +51,14 @@ export class ConfigComponent {
     (error) => {},
     () => {});
   }
+
   onChange(event:any) {
+
+    if(!this.uploadTemplateForm.value.devicemodel.length) {
+      alert("Please select the product model");
+      return;
+    }
+
     this.filename = event.target.files[0];
 
     const fileReader = new FileReader();
@@ -59,8 +72,6 @@ export class ConfigComponent {
       this.template = btoa(fileReader.result as string);
       let result = JSON.parse(fileReader.result as string);
 
-      console.log(result);
-      console.log(result["info.product"]);
       let info = JSON.parse(JSON.stringify(result["info"]));
 
       if(info["product"] == this.uploadTemplateForm.value.devicemodel) {
