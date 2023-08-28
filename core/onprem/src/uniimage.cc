@@ -1961,7 +1961,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/register")) {
-        //CCreate the Grievance 
+        
         auto body = json::parse(http.body());
         auto projection = json::object();
 
@@ -1999,11 +1999,26 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto querydocument = json::object();
         
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
+        auto body = json::parse(http.body());
+        auto projection = json::object();
+
+        projection["_id"] = false;
         auto collectionname = "template";
-        auto response = dbinst.create_document(collectionname, http.body());
+        auto query = json::object();
+        query["filename"] = body["filename"];
+        query["productmodel"] = body["productmodel"];
+
         auto Value = json::object();
         Value["status"] = "success";
         Value["details"] = "";
+
+        std::string response = dbinst.get_document(collectionname, query.dump(), projection.dump());
+        if(!response.length()) {
+            response = dbinst.create_document(collectionname, http.body());
+        } else {
+            Value["details"] = "This file is already released";
+        }
+        
         Value["response"] = response;
 
         if(!response.length()) {
