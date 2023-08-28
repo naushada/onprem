@@ -2005,7 +2005,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         Value["status"] = "success";
         Value["details"] = "";
         Value["response"] = response;
-        
+
         if(!response.length()) {
 
             Value["status"] = "failure";
@@ -2041,91 +2041,6 @@ std::string noor::Service::handlePutMethod(Http& http, auto& dbinst) {
         }
 
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
-
-    } else if(!http.uri().compare(0, 17, "/api/v1/grievance")) {
-        //Create the Grievance 
-        auto body = json::parse(http.body());
-
-        auto collectionname = "grievance";
-        auto filter = json::object();
-        //QS value
-        std::uint32_t ticketid = 0;
-        std::string resolution = "";
-        bool response = false;
-
-        if(!http.value("ticketid").length()) {
-            //return failure response
-            auto jobj = json::object();
-            jobj["result"] = "failure";
-            jobj["reason"] = "";
-            jobj["statuscode"] = 500;
-            jobj["ts"] = "";
-            jobj["ip"] = http.value("X-Forwarded-For");
-            jobj["payload"] = std::string();
-            return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
-        }
-
-        //auto querydocument = json::object();
-        ticketid = std::stoi(http.value("ticketid"));
-        resolution = http.value("resolution");
-
-        filter["tickets.ticketid"] = ticketid;
-        std::stringstream document;
-        document << "{\"$set\":" << "{\"tickets.resolutiondetails\": " << http.body() << "}}" ;
-        response = dbinst.update_collection(collectionname, filter.dump(), document.str());
-
-        auto jobj = json::object();
-        jobj["result"] = "success";
-        jobj["reason"] = "";
-        jobj["statuscode"] = 200;
-        jobj["ts"] = "";
-        jobj["ip"] = http.value("X-Forwarded-For");
-        jobj["payload"] = std::to_string(ticketid);
-
-        if(!response) {
-            jobj["result"] = "failure";
-            jobj["statuscode"] = 500;
-        }
-        return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
-
-    } else if(!http.uri().compare(0, 11, "/api/v1/pta")) {
-        //Create PTA Account 
-        auto body = json::parse(http.body());
-        auto projection = json::object();
-        projection["_id"] = false;
-        auto collectionname = "pta";
-        auto filter = json::object();
-        //QS value
-        auto querydocument = json::object();
-
-        filter["academicyear"] = body["academicyear"];
-        auto response = dbinst.get_document(collectionname, filter.dump(), projection.dump());
-
-        if(!response.length()) {
-            response = dbinst.create_document(collectionname, http.body());
-        } else {
-            //update the document.
-            std::stringstream document;
-            document << "{\"$push\": {\"ptas\": "  << body["ptas"][0] << "}}";
-            response = dbinst.update_collection(collectionname, filter.dump(), document.str());
-        }
-
-        std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
-        auto jobj = json::object();
-        jobj["result"] = "success";
-        jobj["reason"] = "";
-        jobj["statuscode"] = 200;
-        jobj["ts"] = "";
-        jobj["ip"] = http.value("X-Forwarded-For");
-
-        if(!response.length()) {
-            jobj["result"] = "failure";
-            jobj["statuscode"] = 500;
-        }
-
-        return(buildHttpResponseOK(http, jobj.dump(), "application/json"));
-
-    } else if(!http.uri().compare(0, 14, "/api/v1/report")) {
     } else {
 
     }
