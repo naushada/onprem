@@ -15,11 +15,10 @@ export class ConfigComponent {
   product:string = "";
   fwversion:string = "";
   filename:string = "";
-
+  isEnabled:boolean = true;
   constructor(private fb: FormBuilder, private http: HttpService) {
     this.uploadTemplateForm = fb.group({
-      templatename:'',
-      devicemodel: ''
+      templatename:''
     });
 
   }
@@ -54,8 +53,8 @@ export class ConfigComponent {
 
   onChange(event:any) {
 
-    if(!this.uploadTemplateForm.value.devicemodel.length) {
-      alert("Please select the product model");
+    if(!this.uploadTemplateForm.value.templatename.length) {
+      alert("Please select the Template File");
       return;
     }
 
@@ -74,17 +73,13 @@ export class ConfigComponent {
 
       let info = JSON.parse(JSON.stringify(result["info"]));
 
-      if(info["product"] == this.uploadTemplateForm.value.devicemodel) {
-        if(this.template.length <= 16000000) {
+      if(info["product"] != null && this.template.length <= 16000000) {
           this.product = info["product"];
           this.fwversion = info["version"];
-        } else {
-          alert("Template size is > 16MB");
-        }
+          this.isEnabled = false;
+          
       } else {
-        alert("Template has product: " + result["info.product"] + 
-              " selected device model: " + 
-              this.uploadTemplateForm.value.devicemodel);
+        alert("Either Product info or template size is > 16 MB");
       }
     }
 

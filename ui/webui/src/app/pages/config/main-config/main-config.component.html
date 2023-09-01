@@ -1,0 +1,15 @@
+<div class="main-container">
+    <div class="content-container">
+        <clr-vertical-nav>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'CreateConfig'" (click)="onClick('CreateConfig')"><b>Release Template (Config) </b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'ListConfig'" (click)="onClick('ListConfig')"><b>List Released Template</b></a>
+            <a style="cursor: pointer" class = "nav-link nav-text" [class.active] = "selectedItem == 'DeleteConfig'" (click)="onClick('DeleteConfig')"><b>Delete Template (Config) </b></a>
+            
+        </clr-vertical-nav>
+        <div class="content-area" [ngSwitch]="selectedItem">
+            <app-config *ngSwitchCase="'CreateConfig'"></app-config>
+            <app-list-config *ngSwitchCase="'ListConfig'"></app-list-config>
+            <app-delete-config *ngSwitchCase="'DeleteConfig'"></app-delete-config>
+        </div>
+    </div>
+</div>

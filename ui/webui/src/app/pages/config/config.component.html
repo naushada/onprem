@@ -2,37 +2,13 @@
     <div class="clr-container">
         <!-- First ROW -->
         <div class="clr-row">
-            <!--element 1-->
-            <div class="clr-col-auto clr-col-lg" ></div>
             <div class="clr-col-auto clr-col-lg" >
                 <clr-input-container>
                     <label for="templatename">Template (Config) </label>
                     <input type="file" clrInput name="templatename" formControlName="templatename" (change)="onChange($event)">
                 </clr-input-container>
+                <button class="btn btn-primary" type="submit" [disabled] = "isEnabled">Upload Template (Config) </button>
             </div>
-            <div class="clr-col-auto clr-col-lg">
-                <clr-input-container>
-                    <label for="devicemodel">Device Model</label>
-                    <input clrInput name="devicemodel" formControlName="devicemodel">
-                </clr-input-container>
-            </div>
-            <div class="clr-col-auto clr-col-lg" ></div>
-            <div class="clr-col-auto clr-col-lg" ></div>
-        </div>
-        <div class="clr-row">
-            <div class="clr-col-auto clr-col-lg" ></div>
-            <div class="clr-col-auto clr-col-lg">
-                <button class="btn btn-primary" type="submit">Upload Template (Config) </button>
-            </div>
-            <div class="clr-col-auto clr-col-lg" ></div>
-            <div class="clr-col-auto clr-col-lg" ></div>
-            <div class="clr-col-auto clr-col-lg" ></div>
         </div>
     </div>
-    <!--
-    <div class="clr-container">
-        <div class="clr-col-auto clr-col-lg" ></div>
-        <cds-button class="btn btn-primary">Upload Template (Config) </cds-button>
-    </div>
-    -->
 </form>

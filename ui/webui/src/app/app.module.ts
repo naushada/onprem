@@ -22,6 +22,9 @@ import { CreateSwreleaseComponent } from './pages/swrelease/create-swrelease/cre
 import { ListSwreleaseComponent } from './pages/swrelease/list-swrelease/list-swrelease.component';
 import { DeleteSwreleaseComponent } from './pages/swrelease/delete-swrelease/delete-swrelease.component';
 import { PasswordResetComponent } from './pages/resetpassword/password-reset/password-reset.component';
+import { MainConfigComponent } from './pages/config/main-config/main-config.component';
+import { ListConfigComponent } from './pages/config/list-config/list-config.component';
+import { DeleteConfigComponent } from './pages/config/delete-config/delete-config.component';
 ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, newIcon, uploadIcon, connectIcon);
 
 
@@ -41,7 +44,10 @@ ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, 
     CreateSwreleaseComponent,
     ListSwreleaseComponent,
     DeleteSwreleaseComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    MainConfigComponent,
+    ListConfigComponent,
+    DeleteConfigComponent
   ],
   imports: [
     BrowserModule,
