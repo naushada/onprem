@@ -2,10 +2,10 @@
 <clr-datagrid [(clrDgSelected)]="selected" (clrDgSelectedChange)="onSelectionChanged($event)" [clrDgRowSelection]="true">
     <clr-dg-action-bar>
         <div class="btn-group btn-primary">
-            <button class="btn"><cds-icon shape="delete"></cds-icon>Delete</button>
+            <button class="btn" (click)="onDelete()"><cds-icon shape="trash"></cds-icon>Delete</button>
         </div>
     </clr-dg-action-bar>
-
+    
     <clr-dg-column>File Name</clr-dg-column>
     <clr-dg-column>Product Model</clr-dg-column>
     <clr-dg-column>FW Version</clr-dg-column>

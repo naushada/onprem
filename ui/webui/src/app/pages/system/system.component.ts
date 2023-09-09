@@ -30,7 +30,7 @@ class ProductFilter implements ClrDatagridStringFilterInterface<string> {
 
 export class SystemComponent {
 
-  selectedDevice:any;
+  selected:Array<any> = [];
   devices: any[] = [];
   
   //Custom Filter

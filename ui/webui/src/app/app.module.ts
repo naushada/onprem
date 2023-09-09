@@ -10,7 +10,7 @@ import { ConfigComponent } from './pages/config/config.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { CdsIconModule, CdsModule } from '@cds/angular';
-import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon, newIcon, uploadIcon, connectIcon } from '@cds/core/icon';
+import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon, newIcon, uploadIcon, connectIcon, trashIcon} from '@cds/core/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DmsMainComponent } from './pages/dms/dms-main/dms-main.component';
 import { CreateAccountComponent } from './pages/dms/create-account/create-account.component';
@@ -25,7 +25,7 @@ import { PasswordResetComponent } from './pages/resetpassword/password-reset/pas
 import { MainConfigComponent } from './pages/config/main-config/main-config.component';
 import { ListConfigComponent } from './pages/config/list-config/list-config.component';
 import { DeleteConfigComponent } from './pages/config/delete-config/delete-config.component';
-ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, newIcon, uploadIcon, connectIcon);
+ClarityIcons.addIcons(homeIcon, vmBugIcon, cogIcon, eyeIcon, barsIcon,userIcon, newIcon, uploadIcon, connectIcon, trashIcon);
 
 
 @NgModule({

@@ -8,7 +8,7 @@ import { HttpService } from 'src/common/http.service';
 })
 export class DeleteConfigComponent implements OnInit {
 
-  selected:any;
+  selected:Array<any> = [];
   configs:Array<any> = Array<any>();
   constructor(private http: HttpService) {
 
@@ -36,6 +36,20 @@ export class DeleteConfigComponent implements OnInit {
   }
 
   onSelectionChanged(event:any) {
+
   }
 
+  onDelete() {
+    let req:any={};
+    this.selected.forEach(ent => {
+      console.log(ent);
+      req.filename = ent.filename;
+      req.productmodel = ent.productmodel;
+      req.fwversion = ent.fwversion;
+      req.createdon = ent.createdon;
+
+    });
+
+    alert(req);
+  }
 }
