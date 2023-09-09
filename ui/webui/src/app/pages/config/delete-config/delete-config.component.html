@@ -1,1 +1,30 @@
-<p>delete-config works!</p>
+
+<clr-datagrid [(clrDgSelected)]="selected" (clrDgSelectedChange)="onSelectionChanged($event)" [clrDgRowSelection]="true">
+    <clr-dg-action-bar>
+        <div class="btn-group btn-primary">
+            <button class="btn"><cds-icon shape="delete"></cds-icon>Delete</button>
+        </div>
+    </clr-dg-action-bar>
+
+    <clr-dg-column>File Name</clr-dg-column>
+    <clr-dg-column>Product Model</clr-dg-column>
+    <clr-dg-column>FW Version</clr-dg-column>
+    <clr-dg-column>Released On</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let config of configs" [clrDgItem]="config">
+        <clr-dg-cell>{{config.filename}}</clr-dg-cell>
+        <clr-dg-cell>{{config.productmodel}}</clr-dg-cell>
+        <clr-dg-cell>{{config.fwversion}}</clr-dg-cell>
+        <clr-dg-cell>{{config.createdon}}</clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+		<clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems] = "configs.length">
+			<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Config per page</clr-dg-page-size>
+        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+        of {{pagination.totalItems}} Config
+        </clr-dg-pagination>
+    </clr-dg-footer>
+
+</clr-datagrid>
+
