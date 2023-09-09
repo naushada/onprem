@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpService } from 'src/common/http.service';
 
 @Component({
@@ -6,12 +6,16 @@ import { HttpService } from 'src/common/http.service';
   templateUrl: './list-config.component.html',
   styleUrls: ['./list-config.component.scss']
 })
-export class ListConfigComponent {
+export class ListConfigComponent implements OnInit {
 
   selected:any;
   configs:Array<any> = Array<any>();
   constructor(private http: HttpService) {
 
+  }
+
+  ngOnInit(): void {
+    this.onClick();  
   }
 
   onClick() {
