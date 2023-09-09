@@ -1872,9 +1872,31 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
             return(buildHttpResponseOK(http, Value.dump(), "application/json"));
         }
 
-    } else if(!http.uri().compare(0, 11, "/api/v1/dms/swrelease")) {
+    } else if(!http.uri().compare(0, 21, "/api/v1/dms/swrelease")) {
         
-    } else if(!http.uri().compare(0, 14, "/api/v1/dms/template")) {
+    } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
+        auto projection = json::object();
+
+        projection["_id"] = false;
+        projection["filename"] = true;
+        projection["productmodel"] = true;
+        projection["fwversion"] = true;
+        projection["createdon"] = true;
+
+        auto collectionname = "template";
+        auto filter = json::object();
+        std::string response = "";
+        response = dbinst.get_documents(collectionname, filter.dump(), projection.dump());
+
+        auto Value = json::object();
+        Value["status"] = "success";
+        if(!response.length()) {
+            Value["status"] = "failure";
+        }
+        Value["details"] = "";
+        Value["response"] = response;
+
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if((!http.uri().compare(0, 7, "/webui/"))) {
         /* build the file name now */
