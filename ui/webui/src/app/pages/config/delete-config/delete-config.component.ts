@@ -50,6 +50,9 @@ export class DeleteConfigComponent implements OnInit {
 
     });
 
-    alert(req);
+    this.http.deletetemplate(JSON.stringify(this.selected)).subscribe(rsp => {},
+      (error) => {},
+      () => {});
+    
   }
 }

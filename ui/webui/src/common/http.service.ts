@@ -43,6 +43,22 @@ export class HttpService {
     return this.http.get<string>(uri);
   }
 
+  deletetemplate(input:string): Observable<string> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: input,
+    };
+
+    let uri: string = "/api/v1/dms/template";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/template";
+    }
+
+    return this.http.delete<string>(uri, options);
+  }
+
   /*
   Response Format will be as below JSON Object
   {
