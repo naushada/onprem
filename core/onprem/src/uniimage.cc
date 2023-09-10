@@ -2109,7 +2109,10 @@ std::string noor::Service::handleDeleteMethod(Http& http, auto& dbinst) {
         auto collection = "template";
         auto filter = json::object();
         std::cout << "line: " << __LINE__ << " body:  " << body.dump()  << std::endl; 
-        auto response = dbinst.delete_document(collection, body.dump());
+        bool response = false;
+        for(auto ent = body.begin(); ent != body.end(); ++ent) {
+            response = dbinst.delete_document(collection, (*ent).dump());
+        }
         std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
         auto Value = json::object();
         Value["status"] = "success";

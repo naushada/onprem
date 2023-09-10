@@ -125,9 +125,49 @@ bool MongodbClient::delete_document(std::string collectionName, std::string doc)
 
     if(result) {
         return(true);
-    } else {
+    }
+
+    return(false);
+}
+
+
+bool MongodbClient::delete_documents(std::string collectionName, std::string doc)
+{
+    bsoncxx::document::value filter = bsoncxx::from_json(doc.c_str());
+    auto conn = mMongoConnPool->acquire();
+
+    if(!conn) {
         return(false);
     }
+
+    mongocxx::database dbInst = conn->database(get_database().c_str());
+    if(!dbInst) {
+        return(false);
+    }
+    auto collection = dbInst.collection(collectionName.c_str());
+
+    mongocxx::options::bulk_write bulk_opt;
+    mongocxx::write_concern wc;
+    bulk_opt.ordered(false);
+    wc.acknowledge_level(mongocxx::write_concern::level::k_default);
+    bulk_opt.write_concern(wc);
+    auto bulk = collection.create_bulk_write(bulk_opt);
+
+    mongocxx::model::delete_many del(filter.view());
+    bulk.append(del);
+
+    auto result = bulk.execute();
+    std::int32_t cnt = 0;
+
+    if(result) {
+        cnt = result->deleted_count();
+    }
+
+    if(result) {
+        return(true);
+    }
+
+    return(false);
 }
 
 std::string MongodbClient::get_document(std::string collectionName, std::string query, std::string fieldProjection)

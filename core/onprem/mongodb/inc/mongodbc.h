@@ -48,6 +48,7 @@ class MongodbClient {
         bool update_collection(std::string coll, std::string filter, std::string document);
         bool update_collectionEx(std::string coll, std::string filter, std::string document);
         bool delete_document(std::string coll, std::string shippingRecord);
+        bool delete_documents(std::string collectionName, std::string doc);
         bool delete_documentEx(std::string coll, std::string shippingRecord);
         
         std::string create_document(std::string dbName, std::string coll, std::string accountRecord);
