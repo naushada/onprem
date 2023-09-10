@@ -144,6 +144,7 @@ bool MongodbClient::delete_documents(std::string collectionName, std::string doc
     if(!dbInst) {
         return(false);
     }
+    
     auto collection = dbInst.collection(collectionName.c_str());
 
     mongocxx::options::bulk_write bulk_opt;
