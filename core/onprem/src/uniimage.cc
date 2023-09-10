@@ -2103,6 +2103,24 @@ std::string noor::Service::handleDeleteMethod(Http& http, auto& dbinst) {
         }
 
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
+    }else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
+        auto body = json::parse(http.body());
+        std::cout << "line: " << __LINE__ << " json payload: " << body.dump() << std::endl;
+        auto collection = "template";
+        auto filter = json::object();
+        std::cout << "line: " << __LINE__ << " body:  " << body.dump()  << std::endl; 
+        auto response = dbinst.delete_document(collection, body.dump());
+        std::cout << "line: " << __LINE__ << " response: " << response << std::endl;
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+        Value["response"] = "";
+
+        if(!response) {
+            Value["status"] = "failure";
+        }
+
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
     }
 }
 
