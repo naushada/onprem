@@ -30,6 +30,7 @@ export class CreateSwreleaseComponent {
     const zip = new JSZip();
     const extractedFiles = await zip.loadAsync(file);
     extractedFiles.forEach(async (relativePath, file) => {
+      console.log(file);
       const content = await file.async("string");
       saveAs(content, relativePath);
     });
@@ -69,8 +70,10 @@ export class CreateSwreleaseComponent {
       return;
     }
 
-    this.filename = event.target.files[0];
+    //this.filename = event.target.files[0];
+    this.extractZip(event.target.files[0]);
 
+    /*
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
       let binaryData = event.target?.result;
@@ -99,7 +102,8 @@ export class CreateSwreleaseComponent {
     }
   
     fileReader.readAsText(event.target.files[0]);
-}
+    */
+  }
 
 
   
