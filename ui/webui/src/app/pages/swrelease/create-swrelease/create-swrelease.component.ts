@@ -5,6 +5,8 @@ import { HttpService } from 'src/common/http.service';
 //import { fs } from 'fs';
 import * as JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import xml2js from 'xml2js';  
+import { type } from 'os';
 
 @Component({
   selector: 'app-create-swrelease',
@@ -13,9 +15,9 @@ import { saveAs } from 'file-saver';
 })
 export class CreateSwreleaseComponent {
 
-  template:string = "";
-  product:string = "";
-  fwversion:string = "";
+  name:string = "";
+  revision:string = "";
+  type:string = "";
   filename:string = "";
   isEnabled:boolean = true;
 
@@ -29,13 +31,52 @@ export class CreateSwreleaseComponent {
   async extractZip(file: File) {
     const zip = new JSZip();
     const extractedFiles = await zip.loadAsync(file);
+    console.log(extractedFiles);
     extractedFiles.forEach(async (relativePath, file) => {
-      console.log(file);
-      const content = await file.async("string");
-      saveAs(content, relativePath);
+      //console.log(file);
+      if(file.name == "unity.app") {
+        const content = await file.async("string");
+        //console.log(content);
+        this.parseXML(content);
+      }
+      //saveAs(content, relativePath);
     });
   }
   
+  parseXML(data:any) {  
+    return new Promise(resolve => {  
+      var k: string | number,  
+        arr:any = [],  
+        parser = new xml2js.Parser(  
+          {  
+            trim: true,  
+            explicitArray: true
+          });
+
+          parser.parseString(data, (err:any, result:any) => {  
+            let obj = JSON.stringify(result);
+            let elm = JSON.parse(obj);
+            //console.log(elm["app:application"]["$"]["name"]);
+            this.name = elm["app:application"]["$"]["name"];
+            this.revision= elm["app:application"]["$"]["revision"];
+            this.type = elm["app:application"]["$"]["type"]
+            this.isEnabled = false;
+            console.log(this.name + " " + this.type + " " + this.revision);
+            /*  
+            for (k in obj.emp) {  
+              var item = obj.emp[k];  
+              arr.push({  
+                id: item.id[0],  
+                name: item.name[0],  
+                gender: item.gender[0],  
+                mobile: item.mobile[0]  
+              });  
+            }*/ 
+            resolve(arr);  
+          });  
+        });  
+  }
+
   onSubmit() {
     let filepath = this.createSwReleaseForm.value.fwreleasename;
     this.filename = filepath.substring(filepath.lastIndexOf('\\') + 1 );
@@ -46,10 +87,10 @@ export class CreateSwreleaseComponent {
 
     let request = {
       "filename": this.filename,
-      "productmodel": this.product,
-      "fwversion": this.fwversion,
-      "createdon": new Date(),
-      "content": this.template
+      "name": this.name,
+      "revision": this.revision,
+      "createdon": new Date()
+      //"content": this.template
     }
 
     this.http.uploadsoftwarerelease(JSON.stringify(request)).subscribe((response: string) => {

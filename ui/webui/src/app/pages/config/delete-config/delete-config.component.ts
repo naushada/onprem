@@ -56,7 +56,7 @@ export class DeleteConfigComponent implements OnInit {
       
         if(result["status"] == "success") {
           alert("Deleted Released Template Successfully");
-          this.onClick();
+          //this.onClick();
         }
       },
       (error) => {},
