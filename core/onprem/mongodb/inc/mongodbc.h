@@ -7,8 +7,6 @@
 #include <mutex>
 #include <chrono>
 
-#include <bsoncxx/json.hpp>
-#include <bsoncxx/types.hpp>
 #include <mongocxx/pool.hpp>
 #include <mongocxx/client.hpp>
 #include <mongocxx/stdx.hpp>
@@ -17,11 +15,19 @@
 #include <mongocxx/cursor.hpp>
 #include <mongocxx/options/find.hpp>
 #include <mongocxx/bulk_write.hpp>
+
+#include <mongocxx/gridfs/uploader.hpp>
+#include <mongocxx/gridfs/downloader.hpp>
+#include <mongocxx/gridfs/bucket.hpp>
+
+#include <bsoncxx/json.hpp>
+#include <bsoncxx/types.hpp>
 #include <bsoncxx/builder/stream/helpers.hpp>
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/builder/stream/array.hpp>
 #include <bsoncxx/stdx/string_view.hpp>
 #include <bsoncxx/string/to_string.hpp>
+
 
 class MongodbClient {
     public:
@@ -45,6 +51,8 @@ class MongodbClient {
             mURI = uri;
         }
 
+        std::string upload_file(std::string fileName, std::string content);
+        std::string download_file(std::string fileId);
         bool update_collection(std::string coll, std::string filter, std::string document);
         bool update_collectionEx(std::string coll, std::string filter, std::string document);
         bool delete_document(std::string coll, std::string shippingRecord);

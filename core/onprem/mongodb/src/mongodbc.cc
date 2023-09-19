@@ -481,6 +481,33 @@ std::int32_t MongodbClient::create_bulk_document(std::string dbName, std::string
     return(cnt);
 }
 
+std::string MongodbClient::upload_file(std::string fileName, std::string content) {
+    
+    auto conn = mMongoConnPool->acquire();
+    if(!conn) {
+        return(std::string());
+    }
+
+    mongocxx::database db = conn->database(get_database().c_str());
+    if(!db) {
+        return(std::string());
+    }
+
+    auto bucket = db.gridfs_bucket();
+    auto uploader = bucket.open_upload_stream(fileName);
+    std::cout << "line: " << __LINE__ << " filename: " << fileName << std::endl;
+    uploader.write((std::uint8_t *)content.c_str(), content.length());
+    auto result = uploader.close();
+    bsoncxx::types::bson_value::view id = result.id();
+    //std::cout << "line: " << __LINE__ << " file_id: " << id.get_string() << std::endl;
+    //return(bsoncxx::string::to_string());
+
+}
+
+std::string MongodbClient::download_file(std::string fileId) {
+
+}
+
 /** 
  * 
 */

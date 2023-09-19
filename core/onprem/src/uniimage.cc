@@ -2023,7 +2023,9 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto Value = json::object();
         Value["status"] = "success";
         Value["details"] = "";
-
+        auto ret = dbinst.upload_file(body["fillename"], body["content"]);
+        Value["response"] = ret;
+        /*
         std::string response = dbinst.get_document(collectionname, query.dump(), projection.dump());
         if(!response.length()) {
             response = dbinst.create_document(collectionname, http.body());
@@ -2037,7 +2039,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
 
             Value["status"] = "failure";
         }
-        
+        */
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
