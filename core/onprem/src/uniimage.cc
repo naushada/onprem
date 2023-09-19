@@ -573,6 +573,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                             // Http http(request);
                             //if(!http.uri().compare(0, 11, "/api/v1/dms")) {
                                 //Handle locally.
+                            std::cout << "liiine: " << __LINE__  << " total llength: " << result << std::endl;
                             auto rsp = svc->process_web_request(request, GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst());
                             if(rsp.length()) {
                                 auto ret = svc->tcp_tx(Fd, rsp);
@@ -2023,8 +2024,9 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto Value = json::object();
         Value["status"] = "success";
         Value["details"] = "";
-        auto ret = dbinst.upload_file(body["fillename"], body["content"]);
-        Value["response"] = ret;
+        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << body["length"] <<std::endl;
+        auto ret = dbinst.upload_file(body["fillename"], body["content"], body["length"]);
+        //Value["response"] = ret;
         /*
         std::string response = dbinst.get_document(collectionname, query.dump(), projection.dump());
         if(!response.length()) {

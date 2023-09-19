@@ -82,7 +82,8 @@ export class CreateSwreleaseComponent {
       "name": this.name,
       "revision": this.revision,
       "createdon": new Date(),
-      "content": this.content
+      "content": this.content,
+      "length": this.content.length
     }
 
     console.log(request);

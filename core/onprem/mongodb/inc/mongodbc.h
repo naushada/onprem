@@ -51,7 +51,7 @@ class MongodbClient {
             mURI = uri;
         }
 
-        std::string upload_file(std::string fileName, std::string content);
+        std::string upload_file(std::string fileName, std::string content, std::uint32_t len);
         std::string download_file(std::string fileId);
         bool update_collection(std::string coll, std::string filter, std::string document);
         bool update_collectionEx(std::string coll, std::string filter, std::string document);
