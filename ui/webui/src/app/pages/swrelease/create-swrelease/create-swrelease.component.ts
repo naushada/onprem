@@ -20,6 +20,7 @@ export class CreateSwreleaseComponent {
   type:string = "";
   filename:string = "";
   isEnabled:boolean = true;
+  content: any;
 
   createSwReleaseForm: FormGroup;
   constructor(private fb: FormBuilder, private http: HttpService) {
@@ -62,16 +63,7 @@ export class CreateSwreleaseComponent {
             this.type = elm["app:application"]["$"]["type"]
             this.isEnabled = false;
             console.log(this.name + " " + this.type + " " + this.revision);
-            /*  
-            for (k in obj.emp) {  
-              var item = obj.emp[k];  
-              arr.push({  
-                id: item.id[0],  
-                name: item.name[0],  
-                gender: item.gender[0],  
-                mobile: item.mobile[0]  
-              });  
-            }*/ 
+            
             resolve(arr);  
           });  
         });  
@@ -89,10 +81,11 @@ export class CreateSwreleaseComponent {
       "filename": this.filename,
       "name": this.name,
       "revision": this.revision,
-      "createdon": new Date()
-      //"content": this.template
+      "createdon": new Date(),
+      "content": this.content
     }
 
+    console.log(request);
     this.http.uploadsoftwarerelease(JSON.stringify(request)).subscribe((response: string) => {
       let result = JSON.parse(JSON.stringify(response));
       if(result["status"] == "success") {
@@ -114,7 +107,7 @@ export class CreateSwreleaseComponent {
     //this.filename = event.target.files[0];
     this.extractZip(event.target.files[0]);
 
-    /*
+    
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
       let binaryData = event.target?.result;
@@ -123,29 +116,22 @@ export class CreateSwreleaseComponent {
 
     fileReader.onloadend = (event) => {
       //console.log(fileReader.result);
-      this.template = btoa(fileReader.result as string);
-      let result = JSON.parse(fileReader.result as string);
-
-      let info = JSON.parse(JSON.stringify(result["info"]));
-
-      if(info["product"] != null && this.template.length <= 16000000) {
-        this.product = info["product"];
-        this.fwversion = info["version"];
+      this.content = btoa(fileReader.result as string);
+      /*
+      if(this.content.length <= 16000000) {
         this.isEnabled = false;
         
       } else {
         alert("Either Product info or template size is > 16 MB");
       }
+      */
     }
 
     fileReader.onerror = (event) => {
       console.log(event);
     }
   
-    fileReader.readAsText(event.target.files[0]);
-    */
+    fileReader.readAsBinaryString(event.target.files[0]);
+    
   }
-
-
-  
 }

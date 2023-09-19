@@ -2016,10 +2016,30 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto projection = json::object();
         projection["_id"] = false;
         auto collectionname = "swrelease";
-        auto filter = json::object();
-        //QS value
-        auto querydocument = json::object();
+
+        auto query = json::object();
+        query["filename"] = body["filename"];
         
+        auto Value = json::object();
+        Value["status"] = "success";
+        Value["details"] = "";
+
+        std::string response = dbinst.get_document(collectionname, query.dump(), projection.dump());
+        if(!response.length()) {
+            response = dbinst.create_document(collectionname, http.body());
+        } else {
+            Value["details"] = "This file is already released";
+        }
+        
+        Value["response"] = response;
+
+        if(!response.length()) {
+
+            Value["status"] = "failure";
+        }
+        
+        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
+
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
         auto body = json::parse(http.body());
         auto projection = json::object();
