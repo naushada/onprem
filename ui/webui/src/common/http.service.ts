@@ -198,7 +198,14 @@ export class HttpService {
       uri = this.apiURL + "/api/v1/dms/swrelease";
     }
 
-    return this.http.post<string>(uri, input, this.httpOptions);
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/zip',
+        'Content-Length': input.length
+      })
+    };
+
+    return this.http.post<string>(uri, input, httpOptions);
   }
 
   /*

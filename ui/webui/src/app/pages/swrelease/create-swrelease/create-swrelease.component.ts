@@ -20,7 +20,8 @@ export class CreateSwreleaseComponent {
   type:string = "";
   filename:string = "";
   isEnabled:boolean = true;
-  content: any;
+  content: string| ArrayBuffer|any;
+  length: number = 0;
 
   createSwReleaseForm: FormGroup;
   constructor(private fb: FormBuilder, private http: HttpService) {
@@ -83,10 +84,10 @@ export class CreateSwreleaseComponent {
       "revision": this.revision,
       "createdon": new Date(),
       "content": this.content,
-      "length": this.content.length
+      "length": this.length
     }
 
-    console.log(request);
+    console.log(request.content);
     this.http.uploadsoftwarerelease(JSON.stringify(request)).subscribe((response: string) => {
       let result = JSON.parse(JSON.stringify(response));
       if(result["status"] == "success") {
@@ -112,12 +113,14 @@ export class CreateSwreleaseComponent {
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
       let binaryData = event.target?.result;
-      console.log(binaryData);
+      //console.log(binaryData);
     }
 
     fileReader.onloadend = (event) => {
       //console.log(fileReader.result);
-      this.content = btoa(fileReader.result as string);
+      this.content = event.target?.result;
+      this.length = event.total;
+      console.log(event);
       /*
       if(this.content.length <= 16000000) {
         this.isEnabled = false;
@@ -132,7 +135,7 @@ export class CreateSwreleaseComponent {
       console.log(event);
     }
   
-    fileReader.readAsBinaryString(event.target.files[0]);
+    fileReader.readAsDataURL(event.target.files[0]);
     
   }
 }
