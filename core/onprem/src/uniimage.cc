@@ -2025,11 +2025,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto Value = json::object();
         Value["status"] = "success";
         Value["details"] = "";
-        
-        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << body["length"] <<std::endl;
         std::string content(http.body().c_str(), http.body().length());
-        
-        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << content.length() <<std::endl;
         
         std::string filename(body["filename"]);
         auto response = dbinst.upload_file(filename, content, content.length());

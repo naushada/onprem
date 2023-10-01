@@ -482,7 +482,6 @@ std::int32_t MongodbClient::create_bulk_document(std::string dbName, std::string
 }
 
 std::string MongodbClient::upload_file(std::string fileName, std::string& content, std::uint32_t len) {
-    std::cout << "\nline: " << __LINE__ << " entring upload_file " << std::endl;
     auto conn = mMongoConnPool->acquire();
     if(!conn) {
         return(std::string());
@@ -495,13 +494,13 @@ std::string MongodbClient::upload_file(std::string fileName, std::string& conten
 
     auto bucket = db.gridfs_bucket();
     auto uploader = bucket.open_upload_stream(fileName);
-    std::cout << "line: " << __LINE__ << " after open_upload_stream " << std::endl;
-    std::cout << "line: " << __LINE__ << " filename: " << fileName << " content.length(): " << len << std::endl;
     uploader.write((std::uint8_t *)content.data(), len);
     auto result = uploader.close();
     bsoncxx::types::bson_value::view id = result.id();
-    //std::cout << "line: " << __LINE__ << " file_id: " << id.data() << std::endl;
-    //return(bsoncxx::string::to_string());
+    
+    auto oid = id.get_oid();
+    auto uid = oid.value.to_string();
+    return(uid);
 
 }
 

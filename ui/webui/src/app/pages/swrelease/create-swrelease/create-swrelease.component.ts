@@ -89,6 +89,7 @@ export class CreateSwreleaseComponent {
     console.log(request.content);
     this.http.uploadsoftwarerelease(JSON.stringify(request)).subscribe((response: string) => {
       let result = JSON.parse(JSON.stringify(response));
+      console.log(result);
       if(result["status"] == "success") {
         alert("Template: " + this.filename + " Released sucessfully");
       } else {
