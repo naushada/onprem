@@ -2034,6 +2034,14 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
 
         if(!response.length()) {
             Value["status"] = "failure";
+        } else {
+            auto Value = json::object();
+            Value["filename"] = filename;
+            Value["name"] = body["name"];
+            Value["revision"] = body["revision"];
+            Value["createdon"] = body["createdon"];
+            Value["uid"] = response;
+            dbinst.create_document(collectionname, Value.dump());
         }
 
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));

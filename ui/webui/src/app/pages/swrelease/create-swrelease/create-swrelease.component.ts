@@ -89,7 +89,7 @@ export class CreateSwreleaseComponent {
     console.log(request.content);
     this.http.uploadsoftwarerelease(JSON.stringify(request)).subscribe((response: string) => {
       let result = JSON.parse(JSON.stringify(response));
-      console.log(result);
+      //console.log(result);
       if(result["status"] == "success") {
         alert("Template: " + this.filename + " Released sucessfully");
       } else {
@@ -120,15 +120,7 @@ export class CreateSwreleaseComponent {
       //console.log(fileReader.result);
       this.content = event.target?.result;
       this.length = event.total;
-      console.log(event);
-      /*
-      if(this.content.length <= 16000000) {
-        this.isEnabled = false;
-        
-      } else {
-        alert("Either Product info or template size is > 16 MB");
-      }
-      */
+      //console.log(event);
     }
 
     fileReader.onerror = (event) => {
