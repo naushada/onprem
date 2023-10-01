@@ -62,7 +62,7 @@ export class CreateSwreleaseComponent {
             this.revision= elm["app:application"]["$"]["revision"];
             this.type = elm["app:application"]["$"]["type"]
             this.isEnabled = false;
-            console.log(this.name + " " + this.type + " " + this.revision);
+            //console.log(this.name + " " + this.type + " " + this.revision);
             
             resolve(arr);  
           });  
@@ -82,11 +82,12 @@ export class CreateSwreleaseComponent {
       "name": this.name as string,
       "revision": this.revision as string,
       "createdon": new Date() as Date,
-      "content": btoa(this.content) as string,
+      //"content": btoa(this.content) as string,
+      "content": this.content,
       "length": this.length as number
     }
 
-    console.log(request.content);
+    //console.log(request.content);
     this.http.uploadsoftwarerelease(JSON.stringify(request)).subscribe((response: string) => {
       let result = JSON.parse(JSON.stringify(response));
       //console.log(result);
