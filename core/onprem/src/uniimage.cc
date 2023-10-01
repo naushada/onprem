@@ -573,7 +573,7 @@ std::int32_t noor::Uniimage::start(std::int32_t toInMilliSeconds) {
                             // Http http(request);
                             //if(!http.uri().compare(0, 11, "/api/v1/dms")) {
                                 //Handle locally.
-                            std::cout << "liiine: " << __LINE__  << " total llength: " << result << std::endl;
+                            std::cout << "line: " << __LINE__  << " total length: " << result << std::endl;
                             auto rsp = svc->process_web_request(request, GetService(noor::ServiceType::Tcp_Web_Server_Service)->dbinst());
                             if(rsp.length()) {
                                 auto ret = svc->tcp_tx(Fd, rsp);
@@ -2014,6 +2014,7 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
     } else if(!http.uri().compare(0, 21, "/api/v1/dms/swrelease")) {
         
         auto body = json::parse(http.body());
+        
         auto projection = json::object();
         projection["_id"] = false;
         auto collectionname = "swrelease";
@@ -2024,27 +2025,21 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         auto Value = json::object();
         Value["status"] = "success";
         Value["details"] = "";
-        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << body["length"] <<std::endl;
-        std::string content(body["content"], body["length"]);
-        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << body["length"] <<std::endl;
         
-        auto ret = dbinst.upload_file(body["fillename"], content, body["length"]);
-        //Value["response"] = ret;
-        /*
-        std::string response = dbinst.get_document(collectionname, query.dump(), projection.dump());
-        if(!response.length()) {
-            response = dbinst.create_document(collectionname, http.body());
-        } else {
-            Value["details"] = "This file is already released";
-        }
+        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << body["length"] <<std::endl;
+        std::string content(http.body().c_str(), http.body().length());
+        
+        std::cout << "line: " << __LINE__ << " filename: " << body["filename"] << " length: " << content.length() <<std::endl;
+        
+        std::string filename(body["filename"]);
+        auto response = dbinst.upload_file(filename, content, content.length());
         
         Value["response"] = response;
 
         if(!response.length()) {
-
             Value["status"] = "failure";
         }
-        */
+
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {

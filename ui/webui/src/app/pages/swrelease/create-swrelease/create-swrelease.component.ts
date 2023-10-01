@@ -78,12 +78,12 @@ export class CreateSwreleaseComponent {
     }
 
     let request = {
-      "filename": this.filename,
-      "name": this.name,
-      "revision": this.revision,
-      "createdon": new Date(),
-      "content": this.content,
-      "length": this.length
+      "filename": this.filename as string,
+      "name": this.name as string,
+      "revision": this.revision as string,
+      "createdon": new Date() as Date,
+      "content": btoa(this.content) as string,
+      "length": this.length as number
     }
 
     console.log(request.content);
@@ -134,7 +134,7 @@ export class CreateSwreleaseComponent {
       console.log(event);
     }
   
-    fileReader.readAsDataURL(event.target.files[0]);
+    fileReader.readAsBinaryString(event.target.files[0]);
     
   }
 }

@@ -482,7 +482,7 @@ std::int32_t MongodbClient::create_bulk_document(std::string dbName, std::string
 }
 
 std::string MongodbClient::upload_file(std::string fileName, std::string& content, std::uint32_t len) {
-    std::cout << "line: " << __LINE__ << " entring upload_file " << std::endl;
+    std::cout << "\nline: " << __LINE__ << " entring upload_file " << std::endl;
     auto conn = mMongoConnPool->acquire();
     if(!conn) {
         return(std::string());
