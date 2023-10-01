@@ -38,7 +38,16 @@
               "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
               "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
               "node_modules/@clr/icons/clr-icons.min.js"
-            ]
+            ],
+            "allowedCommonJsDependencies": [
+              "events",
+              "file-saver",
+              "tar-fs",
+              "fs",
+              "tar-stream",
+              "xml2js",
+              "jszip"
+           ]
           },
           "configurations": {
             "production": {

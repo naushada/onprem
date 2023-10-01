@@ -67,7 +67,7 @@ RUN apt-get -y update && \
 
 ########## installing dependencies node_module ######################
 RUN apt-get -y install curl && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get -y install nodejs && \
     npm install -g @angular/cli && \
     npm install @clr/core @clr/icons @clr/angular @clr/ui @webcomponents/webcomponentsjs --save

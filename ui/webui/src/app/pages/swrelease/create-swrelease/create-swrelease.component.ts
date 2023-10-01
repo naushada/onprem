@@ -4,9 +4,8 @@ import { HttpService } from 'src/common/http.service';
 //import { extract, pack, on } from 'tar-fs';
 //import { fs } from 'fs';
 import * as JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import xml2js from 'xml2js';  
-import { type } from 'os';
+
 
 @Component({
   selector: 'app-create-swrelease',
