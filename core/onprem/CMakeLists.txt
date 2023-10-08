@@ -18,7 +18,7 @@ file(GLOB SOURCES "src/*.cc")
 add_executable(uniimage ${SOURCES})
 
 target_link_libraries(uniimage mongodbcxx)
-target_link_libraries(uniimage pthread ssl crypto)
+target_link_libraries(uniimage pthread ssl crypto zip)
 
 install(TARGETS uniimage
 	CONFIGURATIONS Release
