@@ -56,15 +56,12 @@ WORKDIR /root/googletest
 RUN mkdir build && cd build && cmake .. && make install
 RUN ldconfig
 
-
-
 # libzip source code and compile it.
 WORKDIR /root
-RUN wget https://libzip.org/download/libzip-1.10.1.tar.gz
-RUN gunzip libzip-1.10.1.tar.gz && \
-    tar -xf wget libzip-1.10.1.tar &&  \
-    cd libzip-1.10.1 && \
-    mkdir -p build && \
+RUN git clone https://github.com/nih-at/libzip.git
+# RUN wget https://libzip.org/download/libzip-1.10.1.tar.gz
+RUN cd libzip && \
+    mkdir build && \
     cd build  && \
     cmake .. && \
     make && make install
