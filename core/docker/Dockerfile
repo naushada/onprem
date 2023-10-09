@@ -9,7 +9,9 @@ RUN apt-get install -y --no-install-recommends \
     libboost-all-dev \
     libssl-dev \
     wget \
-    zlib1g-dev
+    zlib1g-dev \
+    gzip \
+    tar
 
 RUN apt-get update && \
     apt-get -y upgrade && \
@@ -57,13 +59,13 @@ RUN ldconfig
 
 
 # libzip source code and compile it.
-WORKDIR /tmp
-RUN wget https://libzip.org/download/libzip-1.10.1.tar.gz
-RUN gunzip libzip-1.10.1.tar.gz && \
-    tar -xf wget libzip-1.10.1.tar && \
+WORKDIR /root
+RUN wget https://libzip.org/download/libzip-1.10.1.tar.gz && \
+    gunzip libzip-1.10.1.tar.gz && \
+    tar -xf wget libzip-1.10.1.tar &&  \
     cd libzip-1.10.1 && \
     mkdir -p build && \
-    cd build && \
+    cd build  && \
     cmake .. && \
     make && make install
 
