@@ -60,8 +60,8 @@ RUN ldconfig
 
 # libzip source code and compile it.
 WORKDIR /root
-RUN wget https://libzip.org/download/libzip-1.10.1.tar.gz && \
-    gunzip libzip-1.10.1.tar.gz && \
+RUN wget https://libzip.org/download/libzip-1.10.1.tar.gz
+RUN gunzip libzip-1.10.1.tar.gz && \
     tar -xf wget libzip-1.10.1.tar &&  \
     cd libzip-1.10.1 && \
     mkdir -p build && \
