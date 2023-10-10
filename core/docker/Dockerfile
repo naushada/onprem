@@ -9,9 +9,7 @@ RUN apt-get install -y --no-install-recommends \
     libboost-all-dev \
     libssl-dev \
     wget \
-    zlib1g-dev \
-    gzip \
-    tar
+    zlib1g-dev
 
 RUN apt-get update && \
     apt-get -y upgrade && \
