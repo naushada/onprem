@@ -433,6 +433,54 @@ std::string MongodbClient::get_documentList(std::string collectionName, std::str
 }
 
 /**
+ * @brief
+ * @param
+ * @param
+ * @return
+*/
+
+std::int32_t MongodbClient::create_documents(std::string collectionName, std::string doc)
+{
+    std::int32_t cnt = 0;
+    bsoncxx::document::value document = bsoncxx::from_json(doc.c_str());
+    mongocxx::options::bulk_write bulk_opt;
+    mongocxx::write_concern wc;
+    bulk_opt.ordered(false);
+    wc.acknowledge_level(mongocxx::write_concern::level::k_default);
+    bulk_opt.write_concern(wc);
+
+    auto conn = mMongoConnPool->acquire();
+    if(!conn) {
+        return(cnt);
+    }
+
+    mongocxx::database dbInst = conn->database(get_database().c_str());
+    if(!dbInst) {
+        return(cnt);
+    }
+
+    auto collection = dbInst.collection(collectionName.c_str());
+
+    auto bulk = collection.create_bulk_write(bulk_opt);
+
+    bsoncxx::document::view documents = document.view();
+        
+    for(auto iter = documents.begin(); iter != documents.end(); ++iter) {
+        bsoncxx::document::element elm = *iter;
+        mongocxx::model::insert_one insert_op(elm.get_document().value);
+        bulk.append(insert_op);
+    }
+
+    auto result = bulk.execute();
+
+    if(result) {
+        cnt = result->inserted_count();
+    }
+
+    return(cnt);
+}
+
+/**
  * @brief This member function insert the multiple documents in a collection for a given uri.
  * 
  * @param collectionName 
