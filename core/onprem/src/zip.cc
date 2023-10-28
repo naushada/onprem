@@ -3,7 +3,8 @@
 
 #include "zip.hpp"
 
-std::int32_t Zip::extractFiles() {
+std::int32_t Zip::unzip() {
+
     zip_int64_t fcount = -1;
     zip_stat_t sb;
     zip_file_t *open;
@@ -11,6 +12,7 @@ std::int32_t Zip::extractFiles() {
     int ret_stat = -1;
 
     fcount = zip_get_num_entries(m_handle.get(), flags);
+
     if(fcount > 0) {
 
         std::cout << "line: " << __LINE__ << " number of files: " << fcount << std::endl;
@@ -29,7 +31,7 @@ std::int32_t Zip::extractFiles() {
                 std::cout << "line: " << __LINE__ << " zip_stat is ret_stat " << ret_stat << " sb.size: " << sb.size << " sb.name:" << sb.name<< std::endl;
                 {
                     std::unique_ptr<zip_file_t, decltype(&zip_fclose)> fp(zip_fopen(m_handle.get(), name.c_str(), ZIP_FL_UNCHANGED), &zip_fclose);
-                    //auto fp = zip_fopen(archive, name, ZIP_FL_UNCHANGED);
+    
                     if(fp == nullptr) {
                         std::cout << "line: " << __LINE__ << " zip_fopen failed fname: " << name << std::endl;
                         continue;
@@ -37,7 +39,7 @@ std::int32_t Zip::extractFiles() {
 
                     zip_uint64_t nbytes = sb.size;
                     if(!sb.size) {
-                        /// thismust be directory.
+                        /// this must be directory.
                         auto pos = std::string(name).find("/");
                         if(pos != std::string::npos) {
                             /// create the directory
@@ -57,13 +59,13 @@ std::int32_t Zip::extractFiles() {
                         continue;
                     }
 
-                    /// open the file and write the content into it.
+                    /// release the ownership now
                     fp.reset(nullptr);
-                
+                    /// open the file and write the content into it.
                     std::ofstream ff;
                     ff.open(name);
                     std::string ss(buf.begin(), buf.end());
-                    //file.open ("codebind.txt");
+
                     ff << ss;
                     ff.close();
                 }
@@ -73,11 +75,12 @@ std::int32_t Zip::extractFiles() {
 
 }
 
-std::int32_t start(const std::string& fileName) {
+#if 0
+std::int32_t unzip(const std::string& fileName) {
     Zip zzip(fileName);
-    zzip.extractFiles();
+    zzip.unzip();
 }
-
+#endif
 
 
 
