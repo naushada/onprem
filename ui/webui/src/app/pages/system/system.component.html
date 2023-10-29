@@ -1,13 +1,13 @@
 <clr-datagrid (clrDgSelectedChange)="onSelectionChanged($event)" [(clrDgSelected)]="selected" class="clr-col clr-align-self-end" [clrDgRowSelection]="true">
     <clr-dg-action-bar>
         <div class="btn-group btn-primary">
-            <button class="btn">
+            <button class="btn" onclick="window.open('/application_ui/index.html', '_blank')">
                 <cds-icon shape="connect"></cds-icon>
                 Configuration</button>
             <button class="btn">
                 <cds-icon shape="cog"></cds-icon>
                 Apply Template</button>
-            <button class="btn">
+            <button class="btn">  
                 <cds-icon shape="upload"></cds-icon>
                 Firmware Update</button>
             <button class="btn">Delete</button>
@@ -42,7 +42,7 @@
 		<clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems] = "devices.length">
 			<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Device per page</clr-dg-page-size>
         {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-        of {{pagination.totalItems}} Account
+        of {{pagination.totalItems}} Devices
         </clr-dg-pagination>
     </clr-dg-footer>
 
