@@ -82,9 +82,11 @@ export class CreateSwreleaseComponent {
       "name": this.name as string,
       "revision": this.revision as string,
       "createdon": new Date() as Date,
-      //"content": btoa(this.content) as string,
-      "content": this.content,
-      "length": this.length as number
+      "product": this.type as string,
+      "length": this.length as number,
+      "content": btoa(this.content).toString(),
+      //"content": this.content,
+      //"length": this.length as number
     }
 
     //console.log(request.content);

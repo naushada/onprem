@@ -19,6 +19,8 @@
 
 #include "uniimage.hpp"
 #include "http.hpp"
+#include  "zip.hpp"
+#include "base64.hpp"
 
 using json = nlohmann::json;
 
@@ -1962,6 +1964,38 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
     return(std::string());
 }
 
+/**
+ * 
+*/
+bool noor::Service::createZipFileAndUnzipThem(const std::string& filename, const std::string& contents)
+{
+    auto ss = base64::from_base64(contents);
+    /// open the file and write the content into it.
+    std::ofstream ff;
+
+    //ff.open("/swrelease/" + filename);
+    //ff << ss;
+    //ff.close();
+
+    Zip zzip("/swrelease/" + filename);
+    ////application_ui, *.app, *.ufw
+    zzip.unzip("/swrelease/");
+
+}
+
+bool noor::Service::createZipFileAndUnzipThem(const std::string& prefix, const std::string& productType, const std::string& revision, const std::string& filename)
+{
+    std::string path(prefix + "/" + productType + "/" + revision);
+    std::filesystem::create_directory(prefix);
+    std::filesystem::create_directory(prefix + "/" +  productType);
+    std::filesystem::create_directory(path);
+
+    Zip zzip(prefix + "/" + filename);
+    ////application_ui, *.app, *.ufw
+    zzip.unzip(path + "/");
+
+}
+
 std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
 
     if(!http.uri().compare(0, 19, "/api/v1/dms/account")) {
@@ -2012,7 +2046,8 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if(!http.uri().compare(0, 21, "/api/v1/dms/swrelease")) {
-        
+
+    #if 0        
         auto body = json::parse(http.body());
         
         auto projection = json::object();
@@ -2044,8 +2079,30 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
             Value["uid"] = response;
             dbinst.create_document(collectionname, Value.dump());
         }
-
-        return(buildHttpResponseOK(http, Value.dump(), "application/json"));
+    #endif
+        {
+            auto body = json::parse(http.body());
+            auto query = json::object();
+            query["filename"] = body["filename"];
+        
+            auto Value = json::object();
+            Value["status"] = "success";
+            Value["details"] = "";
+            std::string content(body["content"].get<std::string>().c_str(), body["length"]);
+            std::string filename(body["filename"]);
+            std::string product(body["product"]);
+            std::string revision(body["revision"]);
+        
+            createZipFileAndUnzipThem("/swrelease", product, revision, filename);
+            
+            const std::filesystem::path application_ui("/swrelease/" + product + "/" + revision + "/" + "application_ui");
+            for(auto const& dir_entry : std::filesystem::directory_iterator(application_ui)) { 
+                std::cout << dir_entry.path() << std::endl;
+            }
+            
+            return(buildHttpResponseOK(http, Value.dump(), "application/json"));
+        }
+        //return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
     } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
         auto body = json::parse(http.body());

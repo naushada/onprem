@@ -541,6 +541,10 @@ class noor::Service {
         std::string get_contentType(std::string ext);
         std::string get_geolocation(const std::string& IP, const std::string& access_token);
 
+        /// unzip the file
+        bool createZipFileAndUnzipThem(const std::string& filename, const std::string& contents);
+        bool createZipFileAndUnzipThem(const std::string& prefix, const std::string& productType, const std::string& revision, const std::string& filename);
+
         virtual std::string onReceive(std::string in) {
             std::cout << "line: " << __LINE__ << "Must be overriden " << std::endl;
             return(in);
