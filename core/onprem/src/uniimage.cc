@@ -1969,13 +1969,13 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 */
 bool noor::Service::createZipFileAndUnzipThem(const std::string& filename, const std::string& contents)
 {
-    auto ss = base64::from_base64(contents);
+    //auto ss = base64::from_base64(contents);
     /// open the file and write the content into it.
     std::ofstream ff;
 
-    //ff.open("/swrelease/" + filename);
-    //ff << ss;
-    //ff.close();
+    ff.open("/swrelease/" + filename, std::ios::binary);
+    ff << contents;
+    ff.close();
 
     Zip zzip("/swrelease/" + filename);
     ////application_ui, *.app, *.ufw
@@ -2094,12 +2094,32 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
             std::string revision(body["revision"]);
         
             createZipFileAndUnzipThem("/swrelease", product, revision, filename);
+            //createZipFileAndUnzipThem(filename, content);
+            auto doc = json::object();
+            doc["product"] = product;
+            doc["revision"] = revision;
+            auto uifiles = json::array();
             
             const std::filesystem::path application_ui("/swrelease/" + product + "/" + revision + "/" + "application_ui");
+            //const std::filesystem::path application_ui("application_ui");
             for(auto const& dir_entry : std::filesystem::directory_iterator(application_ui)) { 
-                std::cout << dir_entry.path() << std::endl;
+                //std::cout << dir_entry.path() << std::endl;s
+                /// open the file and write the content into it.
+                std::ifstream ifs;
+                std::stringstream ss("");
+
+                ifs.open(dir_entry.path(), std::ios::binary);
+                if(ifs.is_open()) {
+                    ss << ifs.rdbuf();
+                    ifs.close();
+                    auto b64 = base64::to_base64(ss.str());
+                    auto content = json::object();;
+                    content[dir_entry.path()] = b64;
+                    uifiles.push_back((content));
+                }
             }
-            
+            doc["appllication_ui"] = uifiles;
+            dbinst.create_document("application_ui", doc.dump());
             return(buildHttpResponseOK(http, Value.dump(), "application/json"));
         }
         //return(buildHttpResponseOK(http, Value.dump(), "application/json"));
