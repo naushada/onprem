@@ -2108,12 +2108,12 @@ std::string noor::Service::handlePostMethod(Http& http, auto& dbinst) {
                 std::ifstream ifs;
                 std::stringstream ss("");
 
-                ifs.open(dir_entry.path(), std::ios::binary);
+                ifs.open(dir_entry.path(), std::ios::binary | std::ios::in);
                 if(ifs.is_open()) {
                     ss << ifs.rdbuf();
                     ifs.close();
                     auto b64 = base64::to_base64(ss.str());
-                    auto content = json::object();;
+                    auto content = json::object();
                     content[dir_entry.path()] = b64;
                     uifiles.push_back((content));
                 }
