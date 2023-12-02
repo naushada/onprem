@@ -42,9 +42,10 @@ export class SystemComponent {
     http.getdevicedetails().subscribe((response: string) => {
       this.devices.length = 0;
       let result = JSON.parse(JSON.stringify(response));
-      
+      console.log(result);
       if(result["status"] == "success") {
         this.devices = JSON.parse(result["response"]);
+        console.log(this.devices);
       }
       //response.forEach(ent => {this.devices.push(ent);})
     },

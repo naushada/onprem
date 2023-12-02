@@ -3,10 +3,10 @@
         <!-- First ROW -->
         <div class="clr-row">
             <div class="clr-col-auto clr-col-lg" >
-                <clr-input-container>
+                <cds-file>
                     <label for="templatename">Template (Config) </label>
                     <input type="file" clrInput name="templatename" formControlName="templatename" (change)="onChange($event)">
-                </clr-input-container>
+                </cds-file>
                 <button class="btn btn-primary" type="submit" [disabled] = "isEnabled">Upload Template (Config) </button>
             </div>
         </div>

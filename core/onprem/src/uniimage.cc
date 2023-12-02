@@ -1699,8 +1699,8 @@ std::string noor::Service::buildHttpResponseOK(Http& http, std::string body, std
        << "\r\n"
        << "Host: "
        << http.value("Host")
-       << "\r\n";
-       //<< "Access-Control-Allow-Origin: *\r\n";
+       << "\r\n"
+       << "Access-Control-Allow-Origin: *\r\n";
 
     if(body.length()) {
         ss << "Content-Length: "

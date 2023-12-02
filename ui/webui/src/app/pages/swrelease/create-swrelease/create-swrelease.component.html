@@ -3,10 +3,11 @@
         <!-- First ROW -->
         <div class="clr-row">
             <div class="clr-col-auto clr-col-lg" >
-                <clr-input-container>
+                <cds-file>
                     <label for="fwreleasename">FW Release </label>
                     <input type="file" clrInput name="fwreleasename" formControlName="fwreleasename" (change)="onChange($event)">
-                </clr-input-container>
+                </cds-file>
+
                 <button class="btn btn-primary" type="submit" [disabled] = "isEnabled">Upload FW Release </button>
             </div>
         </div>
