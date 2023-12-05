@@ -276,5 +276,34 @@ export class HttpService {
     const options = {params: new HttpParams({fromString: param})};
     return this.http.get<string>(uri, options);
   }
+
+  openEmbeddedGWUi(serialnumber?:string, product?:string, fwRelease?:string) {
+    let param = "all";
+
+    if(serialnumber && serialnumber.length > 0) {
+      param = `serialnumber=${serialnumber}`;
+    } else {
+      param = `serialnumber=${param}`;
+    }
+
+    let uri: string = "/api/v1/dms/application_ui";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/application_ui";
+    }
+
+    const options = {params: new HttpParams({fromString: param})};
+    //return this.http.get<string>(uri, options);
+    window.open(uri, '_blank');
+
+  }
+
+  getEmbeddedUri() : string {
+    let uri: string = "/api/v1/dms/application_ui";
+    if(this.apiURL.length > 0) {
+      uri = this.apiURL + "/api/v1/dms/application_ui";
+    }
+
+    return(uri);
+  }
   
 }

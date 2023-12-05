@@ -37,11 +37,17 @@ class noor::Http {
                         m_body = get_body(in);
                         break;
                     }
+
                     parse_uri(m_header);
                     parse_header(in);
                 }
 
                 m_body = get_body(in);
+                auto idx = m_header.find(' ');
+                if(idx != std::string::npos) {
+                    method(m_header.substr(0, idx));
+                }
+                
             }while(0);
         }
 

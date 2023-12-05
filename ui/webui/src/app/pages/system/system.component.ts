@@ -42,10 +42,10 @@ export class SystemComponent {
     http.getdevicedetails().subscribe((response: string) => {
       this.devices.length = 0;
       let result = JSON.parse(JSON.stringify(response));
-      console.log(result);
+      //console.log(result);
       if(result["status"] == "success") {
         this.devices = JSON.parse(result["response"]);
-        console.log(this.devices);
+        //console.log(this.devices);
       }
       //response.forEach(ent => {this.devices.push(ent);})
     },
@@ -55,4 +55,15 @@ export class SystemComponent {
 
   onSelectionChanged(event:any) {
   }
+
+  onOpenGWUi(event:any) {
+    //console.log(this.http.getEmbeddedUri());
+    let uri: string = this.http.getEmbeddedUri() + "/index.html?serialnumber=" + 
+        this.selected[0].serialnumber + "&model=" + 
+        this.selected[0].model + "&version=" + this.selected[0].osversion;
+
+    window.open(uri, '_blank');
+    
+  }
+
 }

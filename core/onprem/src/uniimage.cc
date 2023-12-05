@@ -1598,7 +1598,7 @@ std::int32_t noor::Service::tcp_rx(std::int32_t channel, std::string& out, std::
     std::array<char, 2048> in;
     in.fill(0);
 
-    if(len == 2048) {
+    if(len <= 2048) {
         rc = ::recv(channel, in.data(), in.size(), 0);
         if(rc < 0) {
             return(rc);
@@ -1875,9 +1875,9 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
             return(buildHttpResponseOK(http, Value.dump(), "application/json"));
         }
 
-    } else if(!http.uri().compare(0, 21, "/api/v1/dms/swrelease")) {
+    } else if(!http.uri().compare("/api/v1/dms/swrelease")) {
         
-    } else if(!http.uri().compare(0, 20, "/api/v1/dms/template")) {
+    } else if(!http.uri().compare("/api/v1/dms/template")) {
         auto projection = json::object();
 
         projection["_id"] = false;
@@ -1901,7 +1901,52 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
-    } else if((!http.uri().compare(0, 7, "/webui/"))) {
+    } else if(!http.uri().compare(0, 26, "/api/v1/dms/application_ui")) {
+        std::string fileName("");
+        std::string ext("");
+
+        std::size_t found = http.uri().find_last_of(".");
+        if(found != std::string::npos) {
+          ext = http.uri().substr((found + 1), (http.uri().length() - found));
+          std::cout << "line: " << __LINE__ << " ext:" << ext << std::endl;
+
+          fileName = http.uri().substr(27, (http.uri().length() - 27));
+          std::cout << "line: " << __LINE__ << " filename:" << fileName << std::endl;
+
+          std::string newFile = "./application_ui/" + fileName;
+          /* Open the index.html file and send it to web browser. */
+          std::ifstream ifs(newFile.c_str());
+          std::stringstream ss("");
+
+          if(ifs.is_open()) {
+              std::string cntType("");
+              cntType = get_contentType(ext); 
+
+              ss << ifs.rdbuf();
+              ifs.close();
+              return(buildHttpResponseOK(http, ss.str(), cntType));
+          } else {
+            std::cout << "line: " << __LINE__ << " couldn't open the file: " << newFile << std::endl; 
+          }
+        } else {
+            std::cout <<"line: " << __LINE__ << " processing index.html file " << std::endl;
+            std::string newFile = "./application_ui/index.html";
+            /* Open the index.html file and send it to web browser. */
+            std::ifstream ifs(newFile.c_str(), std::ios::binary);
+            std::stringstream ss("");
+            std::string cntType("");
+
+            if(ifs.is_open()) {
+                cntType = "text/html";
+                ss << ifs.rdbuf();
+                ifs.close();
+                return(buildHttpResponseOK(http, ss.str(), cntType));
+            } else {
+                std::cout << "line: " << __LINE__ << " couldn't open the file: " << newFile << std::endl;
+            }
+        }
+
+    } else if((!http.uri().compare("/webui/"))) {
         /* build the file name now */
         std::string fileName("");
         std::string ext("");
@@ -1922,7 +1967,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
               ss << ifs.rdbuf();
               ifs.close();
               return(buildHttpResponseOK(http, ss.str(), cntType));
-          } {
+          } else {
             std::cout << "line: " << __LINE__ << " couldn't open the file: " << newFile << std::endl; 
           }
         } else {
@@ -1942,7 +1987,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
                 std::cout << "line: " << __LINE__ << " couldn't open the file: " << newFile << std::endl;
             }
         }
-    } else if(!http.uri().compare(0, 1, "/")) {
+    } else if(!http.uri().compare("/")) {
         std::cout <<"line: " << __LINE__ << " processing index.html file " << std::endl;
         std::string newFile = "../webgui/webui/index.html";
         /* Open the index.html file and send it to web browser. */
@@ -2247,6 +2292,7 @@ std::string noor::Service::process_web_request(const std::string& req, auto& dbi
         return(handleDeleteMethod(http, dbinst));
     } else {
         //Error
+        std::cout << "line: "<< __LINE__ << " method is not supported" << std::endl;
     }
     return(std::string());
 }
@@ -2295,13 +2341,13 @@ std::int32_t noor::Service::web_rx(std::int32_t channel, std::string& data) {
 
     } else if(len > 0) {
         Http http(req);
-        std::cout << "line: " << __LINE__ << " URI: "   << http.uri()    << std::endl;
-        std::cout << "line: " << __LINE__ << " Header " << http.header() << std::endl;
-        std::cout << "line: " << __LINE__ << " Body "   << http.body()   << std::endl;
+        std::cout << "line: " << __LINE__ << " URI\n"    << http.uri()    << std::endl;
+        std::cout << "line: " << __LINE__ << " Header\n" << http.header() << std::endl;
+        std::cout << "line: " << __LINE__ << " Body\n"   << http.body()   << std::endl;
         auto cl = http.value("Content-Length");
 
         if(!cl.length()) {
-            std::cout << "line: " << __LINE__ << " Content-Length is not present" << std::endl;
+            std::cout << "line: " << __LINE__ << " Content-Length is not present len: " << len << std::endl;
             len = tcp_rx(channel, req, len);
             if(len > 0) {
                 data.assign(req);
@@ -2309,7 +2355,7 @@ std::int32_t noor::Service::web_rx(std::int32_t channel, std::string& data) {
             return(data.length());
 
         } else {
-            std::cout << "function: "<< __FUNCTION__ << " line: " << __LINE__ <<" value of Content-Length " << cl << std::endl;
+
             payload_len = std::stoi(cl) + http.header().length();
             std::cout << "line: " << __LINE__ << " payload_len: " << payload_len << " len: " << len << " header_len: " << http.header().length() << std::endl;
             std::stringstream ss;

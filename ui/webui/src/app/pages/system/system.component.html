@@ -48,7 +48,7 @@
         <clr-dg-action-bar>
             <clr-dg-detail-header>Cellular WAN Details</clr-dg-detail-header>
             <div style="float: right; margin-right: 15px;">
-                <button class="btn" onclick="window.open('/application_ui/index.html', '_blank')">
+                <button class="btn" (click)="onOpenGWUi($event)">
                     <cds-icon shape="connect"></cds-icon>
                     Configuration</button>
             </div>
@@ -73,8 +73,8 @@
                 </clr-dg-row>
                 <clr-dg-footer>
                     <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems] = "device.cellular.length">
-                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Wan per page</clr-dg-page-size>
-                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} Wan
+                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Cellular Wan per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{pagination.totalItems}} Cellular Wan
                     </clr-dg-pagination>
                 </clr-dg-footer>
             </clr-datagrid>
