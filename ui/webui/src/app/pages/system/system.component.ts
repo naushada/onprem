@@ -62,7 +62,7 @@ export class SystemComponent {
         this.selected[0].serialnumber + "&model=" + 
         this.selected[0].model + "&version=" + this.selected[0].osversion;
 
-    window.open(uri, '_blank');
+    window.open(uri);
     
   }
 

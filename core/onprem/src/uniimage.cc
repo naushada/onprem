@@ -1946,7 +1946,7 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
             }
         }
 
-    } else if((!http.uri().compare("/webui/"))) {
+    } else if((!http.uri().compare(0, 7, "/webui/"))) {
         /* build the file name now */
         std::string fileName("");
         std::string ext("");
@@ -2336,6 +2336,7 @@ std::int32_t noor::Service::web_rx(std::int32_t channel, std::string& data) {
 
     len = tcp_peek(channel, req);
     if(!len) {
+        len = tcp_rx(channel, req, len);
         std::cout << "function: "<<__FUNCTION__ << " line: " << __LINE__ << " channel: " << channel << " being closed" << std::endl;
         return(len);
 
