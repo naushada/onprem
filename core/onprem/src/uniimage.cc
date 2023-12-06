@@ -1903,25 +1903,28 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 
     } else if(!http.uri().compare(0, 26, "/v1/users/current")) {
         json response =  json::object();
+        json profiles = json::object();
+        json  content = json::array();
+        profiles = {
+            {"uid", "1"},
+            {"name", "User"}
+        };
+        content.push_back(profiles);
+
         response = {
-             {"uid", ""}, 
+             {"uid", "1"}, 
              {"company", 
                 {
-                    { "uid", ""}, 
+                    { "uid", "1"}, 
                     {"name", "Sieerra Wireless"}
                 }
             },
             {"email", "mahmed@sierrawireless.com"},
             
-            {"profiles",
-                    {
-                        {"uid", ""},
-                        {"name", "User"}
-                    }
-            },
+            {"profiles", content},
             {"profile",
                 {
-                    {"uid", ""},
+                    {"uid", "1"},
                     {"name", "User"}
                 }
             },
