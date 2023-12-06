@@ -1901,6 +1901,40 @@ std::string noor::Service::handleGetMethod(Http& http, auto& dbinst) {
 
         return(buildHttpResponseOK(http, Value.dump(), "application/json"));
 
+    } else if(!http.uri().compare(0, 26, "/v1/users/current")) {
+        json response =  json::object();
+        response = {
+             {"uid", ""}, 
+             {"company", 
+                {
+                    { "uid", ""}, 
+                    {"name", "Sieerra Wireless"}
+                }
+            },
+            {"email", "mahmed@sierrawireless.com"},
+            
+            {"profiles",
+                    {
+                        {"uid", ""},
+                        {"name", "User"}
+                    }
+            },
+            {"profile",
+                {
+                    {"uid", ""},
+                    {"name", "User"}
+                }
+            },
+            {"marketingProfiling", true},
+            {"phoneNummber", ""},
+            {"newsletterOptIn", ""},
+            {"picture",nullptr},
+            {"name", "Mohd Naushad Ahmed"}
+        };
+
+        std::cout << "line: "  << __LINE__ << " response " <<  response.dump() << std::endl;
+        return(buildHttpResponseOK(http, response.dump(), "application/json"));
+        
     } else if(!http.uri().compare(0, 26, "/api/v1/dms/application_ui")) {
         std::string fileName("");
         std::string ext("");
